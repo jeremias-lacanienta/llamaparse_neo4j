@@ -1,0 +1,14 @@
+# Virtual Environments
+.venv/
+.venv-3.9/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Logs
+logs/
+
+# Environment files
+.env

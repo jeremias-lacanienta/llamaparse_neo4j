@@ -1,0 +1,6 @@
+# Python 3.13 requirements
+requests
+python-dotenv
+boto3>=1.26.0
+llama-parse>=0.1.0
+# Note: spaCy is not included here as it has compatibility issues with Python 3.13

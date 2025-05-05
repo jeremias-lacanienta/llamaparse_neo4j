@@ -1,0 +1,827 @@
+#!/usr/bin/env python3
+"""
+JSON to Neo4j Converter
+
+This script converts LlamaParse JSON output to Neo4j Cypher commands for importing
+contract data into a graph database. Uses SpaCy and ContractBERT for enhanced legal text processing.
+"""
+
+import argparse
+import json
+import os
+import sys
+import re
+import spacy
+from typing import Dict, List, Any, Optional
+from datetime import datetime
+import networkx as nx
+import uuid
+
+# Import ContractBERT/transformer libraries
+from transformers import AutoTokenizer, AutoModelForTokenClassification
+from transformers import pipeline, AutoModelForSequenceClassification
+
+# Load SpaCy model
+nlp = spacy.load("en_core_web_sm")
+
+# Global matchers for identifying contract elements
+matcher = spacy.matcher.Matcher(nlp.vocab)
+phrase_matcher = spacy.matcher.PhraseMatcher(nlp.vocab)
+
+# Global variables for ContractBERT models
+contractbert_ner = None
+contractbert_classifier = None
+contractbert_tokenizer = None
+
+def initialize_contractbert():
+    """Initialize ContractBERT models for legal text analysis."""
+    global contractbert_ner, contractbert_classifier, contractbert_tokenizer
+    
+    try:
+        print("Loading ContractBERT models...")
+        # Initialize tokenizer using legal-bert as base
+        contractbert_tokenizer = AutoTokenizer.from_pretrained("nlpaueb/legal-bert-base-uncased")
+        
+        # Load NER model for entity extraction
+        ner_model = AutoModelForTokenClassification.from_pretrained("nlpaueb/legal-bert-base-uncased")
+        contractbert_ner = pipeline("ner", model=ner_model, tokenizer=contractbert_tokenizer, 
+                                    aggregation_strategy="simple")
+        
+        # Load classifier for document and clause classification
+        classifier_model = AutoModelForSequenceClassification.from_pretrained("nlpaueb/legal-bert-base-uncased")
+        contractbert_classifier = pipeline("text-classification", model=classifier_model, 
+                                         tokenizer=contractbert_tokenizer)
+        
+        print("ContractBERT models loaded successfully")
+        return True
+    except Exception as e:
+        print(f"Warning: Could not initialize ContractBERT models: {e}")
+        print("Falling back to SpaCy-only analysis")
+        return False
+
+# Initialize patterns for contract element detection
+def initialize_matchers():
+    """Initialize the pattern matchers for contract elements."""
+    # Definition patterns
+    definition_patterns = [
+        [{"LOWER": {"IN": ["means", "shall", "will"]}}, {"LOWER": "mean"}, {"LOWER": "the"}],
+        [{"LOWER": {"IN": ["means", "shall", "will"]}}, {"LOWER": "refer"}, {"LOWER": "to"}],
+        [{"LOWER": "is"}, {"LOWER": "defined"}, {"LOWER": "as"}],
+        [{"LOWER": "shall"}, {"LOWER": "have"}, {"LOWER": "the"}, {"LOWER": "meaning"}]
+    ]
+    for i, pattern in enumerate(definition_patterns):
+        matcher.add(f"DEFINITION_{i}", [pattern])
+    
+    # Obligation patterns
+    obligation_patterns = [
+        [{"LOWER": {"IN": ["shall", "must", "will"]}}, {"POS": "VERB"}],
+        [{"LOWER": "is"}, {"LOWER": {"IN": ["required", "obligated"]}}, {"LOWER": "to"}],
+        [{"LOWER": "has"}, {"LOWER": "a"}, {"LOWER": {"IN": ["duty", "obligation"]}}, {"LOWER": "to"}]
+    ]
+    for i, pattern in enumerate(obligation_patterns):
+        matcher.add(f"OBLIGATION_{i}", [pattern])
+    
+    # Condition patterns
+    condition_patterns = [
+        [{"LOWER": {"IN": ["if", "when", "whenever"]}}, {"OP": "*"}],
+        [{"LOWER": "in"}, {"LOWER": "the"}, {"LOWER": "event"}, {"LOWER": "that"}],
+        [{"LOWER": "subject"}, {"LOWER": "to"}],
+        [{"LOWER": "provided"}, {"LOWER": "that"}],
+        [{"LOWER": "on"}, {"LOWER": "condition"}, {"LOWER": "that"}]
+    ]
+    for i, pattern in enumerate(condition_patterns):
+        matcher.add(f"CONDITION_{i}", [pattern])
+    
+    # Term patterns
+    term_patterns = [
+        [{"LOWER": "term"}, {"IS_PUNCT": True}, {"LOWER": "the"}],
+        [{"LOWER": {"IN": ["during", "throughout"]}}, {"LOWER": "the"}, {"LOWER": "term"}],
+        [{"LOWER": "expiration"}, {"LOWER": "date"}]
+    ]
+    for i, pattern in enumerate(term_patterns):
+        matcher.add(f"TERM_{i}", [pattern])
+    
+    # Payment patterns
+    payment_patterns = [
+        [{"LOWER": {"IN": ["payment", "fee", "compensation", "price"]}}, {"OP": "*"}],
+        [{"LOWER": {"IN": ["pay", "reimburse", "compensate"]}}, {"POS": "DET"}, {"OP": "*"}]
+    ]
+    for i, pattern in enumerate(payment_patterns):
+        matcher.add(f"PAYMENT_{i}", [pattern])
+
+# Initialize matchers
+initialize_matchers()
+
+def extract_contract_metadata(data: List[Dict[str, Any]]) -> Dict[str, Any]:
+    """Extract key metadata about the contract using ContractBERT and SpaCy NLP for better accuracy."""
+    metadata = {
+        "title": "",
+        "effective_date": "",
+        "parties": [],
+        "document_type": "Contract"
+    }
+    
+    # Check for document metadata in the first page
+    if data and len(data) > 0 and "pages" in data[0]:
+        first_page_text = data[0]["pages"][0]["text"]
+        
+        # Process with ContractBERT if available
+        if contractbert_ner is not None:
+            # Process the text with ContractBERT in chunks
+            chunk_size = 450  # Leave buffer for special tokens
+            text_chunks = [first_page_text[i:i+chunk_size] for i in range(0, min(len(first_page_text), 10000), chunk_size)]
+            
+            # Extract entities using ContractBERT
+            entities = {
+                "DATE": [],
+                "ORG": [],
+                "PERSON": [],
+                "MONEY": [],
+                "TIME": []
+            }
+            
+            print("Analyzing contract with ContractBERT...")
+            for chunk in text_chunks:
+                try:
+                    # Apply NER pipeline to each chunk
+                    results = contractbert_ner(chunk)
+                    
+                    # Group results by entity type
+                    for entity in results:
+                        entity_type = entity.get("entity_group", "")
+                        if entity_type in entities:
+                            entities[entity_type].append(entity.get("word", ""))
+                except Exception as e:
+                    print(f"Warning: ContractBERT NER analysis failed for chunk: {e}")
+            
+            # Try to classify document type
+            if contractbert_classifier is not None:
+                try:
+                    # Use first chunk for document classification
+                    doc_type_results = contractbert_classifier(text_chunks[0])
+                    if doc_type_results and len(doc_type_results) > 0:
+                        doc_type = doc_type_results[0].get("label", "")
+                        if doc_type:
+                            metadata["document_type"] = doc_type
+                except Exception as e:
+                    print(f"Warning: ContractBERT classification failed: {e}")
+                    
+            # Extract dates and find effective date
+            dates = entities["DATE"]
+            if dates:
+                # Look for effective date patterns
+                date_contexts = ["effective date", "dated as of", "agreement date"]
+                
+                # Find dates near effective date context
+                for date in dates:
+                    for context in date_contexts:
+                        if context in first_page_text.lower() and first_page_text.lower().find(context) + 50 > first_page_text.lower().find(date.lower()):
+                            metadata["effective_date"] = date
+                            break
+                    if metadata["effective_date"]:
+                        break
+                        
+                # If no date found with context, use the first date
+                if not metadata["effective_date"] and dates:
+                    metadata["effective_date"] = dates[0]
+            
+            # Use organizations as potential parties
+            org_entities = entities["ORG"]
+            potential_parties = []
+            
+            # Filter organizations that look like valid parties
+            for org in org_entities:
+                org = org.strip()
+                if (len(org.split()) > 1 and 
+                    (re.search(r"(?:Inc\.|LLC|Ltd\.|Limited|Corp\.|Corporation|B\.V\.|GmbH)", org) or 
+                     "company" in org.lower() or 
+                     "corporation" in org.lower())):
+                    potential_parties.append(org)
+            
+            # Remove duplicates and false positives
+            filtered_parties = []
+            for party in potential_parties:
+                is_unique = True
+                for existing_party in filtered_parties:
+                    if party in existing_party or existing_party in party:
+                        is_unique = False
+                        if len(party) > len(existing_party):
+                            filtered_parties.remove(existing_party)
+                            filtered_parties.append(party)
+                        break
+                if is_unique:
+                    filtered_parties.append(party)
+            
+            metadata["parties"] = filtered_parties[:5]  # Limit to 5 most likely parties
+        else:
+            # Fall back to SpaCy if ContractBERT isn't available
+            doc = nlp(first_page_text[:10000])
+            
+            # Extract dates using SpaCy
+            dates = []
+            for ent in doc.ents:
+                if ent.label_ == "DATE":
+                    dates.append(ent.text)
+            
+            # Look for effective date patterns
+            date_contexts = ["effective date", "dated as of", "agreement date"]
+            
+            # Find dates that appear near effective date context
+            for date in dates:
+                for context in date_contexts:
+                    if context in first_page_text.lower() and first_page_text.lower().find(context) + 50 > first_page_text.lower().find(date.lower()):
+                        metadata["effective_date"] = date
+                        break
+                if metadata["effective_date"]:
+                    break
+                    
+            # If no date found with context, use the first date mentioned
+            if not metadata["effective_date"] and dates:
+                metadata["effective_date"] = dates[0]
+            
+            # Extract parties using SpaCy
+            org_entities = [ent.text for ent in doc.ents if ent.label_ == "ORG"]
+            potential_parties = []
+            
+            # Filter organizations that look like valid parties
+            for org in org_entities:
+                org = org.strip()
+                if (len(org.split()) > 1 and 
+                    (re.search(r"(?:Inc\.|LLC|Ltd\.|Limited|Corp\.|Corporation|B\.V\.|GmbH)", org) or 
+                     "company" in org.lower() or 
+                     "corporation" in org.lower())):
+                    potential_parties.append(org)
+            
+            # Filter parties
+            filtered_parties = []
+            for party in potential_parties:
+                is_unique = True
+                for existing_party in filtered_parties:
+                    if party in existing_party or existing_party in party:
+                        is_unique = False
+                        if len(party) > len(existing_party):
+                            filtered_parties.remove(existing_party)
+                            filtered_parties.append(party)
+                        break
+                if is_unique:
+                    filtered_parties.append(party)
+            
+            metadata["parties"] = filtered_parties[:5]  # Limit to 5 most likely parties
+        
+        # Extract contract title using regex patterns
+        title_patterns = [
+            r"(.*?(?:AGREEMENT|CONTRACT))",
+            r"(^.+?(?=Between|BETWEEN|between))",
+            r"(^[A-Z\s]+(?:\s*[-–—]\s*[A-Z\s]+)?)"
+        ]
+        
+        for pattern in title_patterns:
+            title_match = re.search(pattern, first_page_text, re.IGNORECASE | re.MULTILINE)
+            if title_match:
+                potential_title = title_match.group(1).strip()
+                if len(potential_title.split()) <= 15:
+                    metadata["title"] = potential_title
+                    break
+        
+        # If title not found, try to find all-caps sentences
+        if not metadata["title"]:
+            doc = nlp(first_page_text[:10000]) if 'doc' not in locals() else doc
+            for sent in list(doc.sents)[:3]:
+                if sent.text.isupper() and 3 < len(sent.text.split()) < 15:
+                    metadata["title"] = sent.text
+                    break
+        
+        # Fallback regex pattern for parties
+        if not metadata["parties"]:
+            if "Between" in first_page_text:
+                try:
+                    parties_text = first_page_text.split("Between", 1)[1]
+                    if "Effective Date" in parties_text:
+                        parties_text = parties_text.split("Effective Date")[0]
+                    
+                    # Look for party indicators
+                    party_indicators = [
+                        r"([A-Za-z0-9\s,\.]+?(?:Inc\.|LLC|Ltd\.|Limited|Corp\.|Corporation|B\.V\.|GmbH))"
+                    ]
+                    
+                    found_parties = []
+                    for pattern in party_indicators:
+                        matches = re.findall(pattern, parties_text)
+                        found_parties.extend([match.strip() for match in matches if match.strip()])
+                    
+                    if found_parties:
+                        metadata["parties"] = found_parties
+                except Exception:
+                    pass
+        
+        # If not determined by ContractBERT, infer document type
+        if metadata["document_type"] == "Contract":
+            doc_types = {
+                "Non-Disclosure Agreement": ["confidential", "disclose", "NDA"],
+                "Employment Contract": ["employ", "salary", "position", "hire"],
+                "Lease Agreement": ["lease", "rent", "landlord", "tenant"],
+                "License Agreement": ["license", "royalty", "intellectual property"],
+                "Services Agreement": ["service", "perform", "deliverable"],
+                "Purchase Agreement": ["purchase", "buy", "acquire", "sale"],
+                "Merger Agreement": ["merger", "acquire", "acquisition"]
+            }
+            
+            doc_text_lower = first_page_text.lower()
+            type_scores = {}
+            for doc_type, keywords in doc_types.items():
+                score = sum(doc_text_lower.count(keyword.lower()) for keyword in keywords)
+                type_scores[doc_type] = score
+            
+            if type_scores:
+                best_type = max(type_scores.items(), key=lambda x: x[1])
+                if best_type[1] > 0:
+                    metadata["document_type"] = best_type[0]
+    
+    return metadata
+
+def extract_articles(data: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """Extract articles and sections using SpaCy for better text structure analysis."""
+    articles = []
+    
+    # Mapping for numeric to Roman numerals for article identification
+    roman_to_number = {
+        "I": "1", "II": "2", "III": "3", "IV": "4", "V": "5",
+        "VI": "6", "VII": "7", "VIII": "8", "IX": "9", "X": "10",
+        "XI": "11", "XII": "12", "XIII": "13", "XIV": "14", "XV": "15",
+        "XVI": "16", "XVII": "17", "XVIII": "18", "XIX": "19", "XX": "20",
+    }
+    
+    # Define patterns for recognizing article headers and sections
+    article_patterns = [
+        r"ARTICLE\s+([IVXivx]+)\s*[-–—.:]\s*(.*?)(?=$|\n)",
+        r"ARTICLE\s+(\d+)\s*[-–—.:]\s*(.*?)(?=$|\n)",
+        r"(\d+)\.\s*([A-Z][A-Za-z\s]+)(?=$|\n)",
+        r"([A-Z][A-Za-z\s]+)\s*\n",
+        r"SECTION\s+(\d+)[.:]\s*(.*?)(?=$|\n)"
+    ]
+    
+    # Define patterns for sections using SpaCy's rule-based matcher
+    section_patterns = [
+        r"(\d+\.\d+)\s+(.*?)(?=$|\n)",
+        r"(\d+\.\d+\.\d+)\s+(.*?)(?=$|\n)",
+        r"(\d+\.\d+[a-z])\s+(.*?)(?=$|\n)",
+        r"([A-Za-z])\.\s+(.*?)(?=$|\n)",
+        r"\(([a-z])\)\s+(.*?)(?=$|\n)"
+    ]
+    
+    # Process all pages to extract structure
+    for document in data:
+        pages_text = []
+        for page in document["pages"]:
+            pages_text.append(page["text"])
+        
+        # Combine all text for better pattern matching across page breaks
+        full_text = "\n".join(pages_text)
+        
+        # Use SpaCy to analyze the document structure
+        # Process in chunks to avoid memory issues with large documents
+        chunk_size = 10000
+        text_chunks = [full_text[i:i+chunk_size] for i in range(0, len(full_text), chunk_size)]
+        
+        # First pass: Identify articles using regex patterns
+        for pattern in article_patterns:
+            article_matches = re.finditer(pattern, full_text, re.MULTILINE)
+            for match in article_matches:
+                article_num = match.group(1)
+                article_title = match.group(2).strip() if len(match.groups()) > 1 else "UNTITLED"
+                
+                # Convert Roman numerals to numeric if needed
+                numeric_id = roman_to_number.get(article_num.upper(), article_num)
+                
+                new_article = {
+                    "number": article_num,
+                    "numeric_id": numeric_id,
+                    "title": article_title,
+                    "content": "",
+                    "sections": []
+                }
+                articles.append(new_article)
+        
+        # If no articles found, try using SpaCy to identify document structure
+        if not articles:
+            for i, chunk in enumerate(text_chunks):
+                doc = nlp(chunk)
+                
+                # Look for sentence patterns that could be article headers
+                for sent in doc.sents:
+                    # Check for all-caps sentences that could be headers
+                    if sent.text.isupper() and len(sent.text.split()) < 8:
+                        articles.append({
+                            "number": str(len(articles) + 1),
+                            "numeric_id": str(len(articles) + 1),
+                            "title": sent.text.strip(),
+                            "content": "",
+                            "sections": []
+                        })
+        
+        # If still no structure found, create a default article
+        if not articles:
+            articles.append({
+                "number": "1",
+                "numeric_id": "1",
+                "title": "CONTRACT TEXT",
+                "content": "",
+                "sections": []
+            })
+            
+        # Sort articles to ensure proper order
+        if articles:
+            try:
+                articles.sort(key=lambda x: int(x["numeric_id"]))
+            except (ValueError, TypeError):
+                # If conversion fails, maintain the original order
+                pass
+        
+        # Second pass: Identify sections within articles
+        for idx, article in enumerate(articles):
+            article_start_idx = full_text.find(f"ARTICLE {article['number']}")
+            if article_start_idx == -1:  # Try different formats
+                article_start_idx = full_text.find(f"Article {article['number']}")
+            
+            # If still not found, look for the title itself
+            if article_start_idx == -1 and len(article['title']) > 3:
+                article_start_idx = full_text.find(article['title'])
+            
+            # If we can't find the article, use a rough position based on the articles array
+            if article_start_idx == -1:
+                if idx == 0:
+                    article_start_idx = 0
+                else:
+                    prev_art_title = articles[idx-1]['title']
+                    article_start_idx = full_text.find(prev_art_title)
+                    if article_start_idx > 0:
+                        article_start_idx += len(prev_art_title)
+            
+            # Determine article end
+            article_end_idx = len(full_text)
+            if idx < len(articles) - 1:
+                next_art_title = articles[idx+1]['title']
+                next_art_idx = full_text.find(next_art_title, article_start_idx)
+                if next_art_idx > 0:
+                    article_end_idx = next_art_idx
+            
+            # Extract article content
+            if article_start_idx >= 0:
+                article_text = full_text[article_start_idx:article_end_idx]
+                
+                # Process this article's text with SpaCy for better section identification
+                article_chunks = [article_text[i:i+chunk_size] for i in range(0, len(article_text), chunk_size)]
+                
+                # Look for sections using regex patterns
+                for pattern in section_patterns:
+                    section_matches = re.finditer(pattern, article_text, re.MULTILINE)
+                    for match in section_matches:
+                        section_num = match.group(1)
+                        section_title = match.group(2).strip()
+                        
+                        # Add section to article
+                        section = {
+                            "number": section_num,
+                            "title": section_title,
+                            "content": ""
+                        }
+                        article["sections"].append(section)
+                
+                # Find content for each section
+                for i, section in enumerate(article["sections"]):
+                    section_start = article_text.find(f"{section['number']} {section['title']}")
+                    if section_start == -1:
+                        continue
+                        
+                    section_start += len(f"{section['number']} {section['title']}")
+                    
+                    # Find end of this section (start of next section or end of article)
+                    section_end = article_end_idx - article_start_idx
+                    if i < len(article["sections"]) - 1:
+                        next_sec = article["sections"][i+1]
+                        next_start = article_text.find(f"{next_sec['number']} {next_sec['title']}")
+                        if next_start > 0:
+                            section_end = next_start
+                    
+                    # Store section content
+                    section_content = article_text[section_start:section_end].strip()
+                    section["content"] = section_content
+    
+    return articles
+
+def extract_parties(data: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """Extract detailed information about the parties using SpaCy NER."""
+    parties = []
+    
+    if not data or "pages" not in data[0]:
+        return parties
+    
+    # Get text from first few pages where party information is usually found
+    pages_to_check = min(3, len(data[0]["pages"]))
+    first_pages_text = "\n".join([data[0]["pages"][i]["text"] for i in range(pages_to_check)])
+    
+    # Get text from last few pages where signatures are usually found
+    last_pages_text = ""
+    if len(data[0]["pages"]) > 2:
+        last_pages = data[0]["pages"][-2:]
+        last_pages_text = "\n".join([page["text"] for page in last_pages])
+    
+    # Process the text with SpaCy for entity extraction
+    # Process in chunks to handle large documents
+    chunk_size = 10000
+    first_pages_chunks = [first_pages_text[i:i+chunk_size] for i in range(0, len(first_pages_text), chunk_size)]
+    
+    org_entities = []
+    person_entities = []
+    
+    # Process each chunk with SpaCy
+    for chunk in first_pages_chunks:
+        doc = nlp(chunk)
+        
+        # Extract organization and person entities
+        for ent in doc.ents:
+            if ent.label_ == "ORG":
+                org_entities.append(ent.text)
+            elif ent.label_ == "PERSON":
+                person_entities.append(ent.text)
+    
+    # Filter organization entities to find likely parties
+    potential_parties = []
+    for org in org_entities:
+        org = org.strip()
+        # Organizations are typically multiword and often include legal suffixes
+        if len(org.split()) > 1 and len(org) > 5:
+            potential_parties.append(org)
+    
+    # If SpaCy NER didn't find clear parties, try the Between/And structure
+    if len(potential_parties) < 2:
+        between_and_pattern = r"Between\s+(?:.*?)\s+and\s+(?:.*?)(?:Effective Date|WITNESSETH|WHEREAS|NOW, THEREFORE|$)"
+        between_match = re.search(between_and_pattern, first_pages_text, re.DOTALL | re.IGNORECASE)
+        
+        if between_match:
+            between_text = between_match.group(0)
+            
+            # Split on "and" to get individual parties (only the most significant "and")
+            party_texts = re.split(r"\s+and\s+", between_text, maxsplit=1)
+            
+            # Process each party text
+            for party_text in party_texts:
+                # Ignore the "Between" in the first part
+                party_text = re.sub(r"^Between\s+", "", party_text, flags=re.IGNORECASE)
+                
+                # Try to extract party name and entity type
+                entity_patterns = [
+                    # Name + entity type in parentheses
+                    r"([A-Za-z0-9\s,\.&]+)(?:\((?:a|an)\s+([^)]+)\))",
+                    # Name + Inc./LLC/Ltd./Corp./etc.
+                    r"([A-Za-z0-9\s,\.&]+(?:Inc\.|LLC|Ltd\.|Limited|Corp\.|Corporation|B\.V\.|GmbH|S\.A\.|S\.p\.A\.))\s*(?:\([^)]*\))?",
+                    # Name followed by jurisdiction indicator
+                    r"([A-Za-z0-9\s,\.&]+),\s*(?:a|an)\s+([A-Za-z\s]+(?:corporation|company|partnership|entity|organization))"
+                ]
+                
+                for pattern in entity_patterns:
+                    match = re.search(pattern, party_text.strip(), re.IGNORECASE)
+                    if match:
+                        name = match.group(1).strip()
+                        entity_type = match.group(2).strip() if len(match.groups()) > 1 else "Organization"
+                        
+                        potential_parties.append(name)
+                        break
+    
+    # Create party records for the most likely organizations
+    seen_parties = set()
+    for party_name in potential_parties:
+        # Avoid duplicates or very similar names
+        is_unique = True
+        for seen in seen_parties:
+            if party_name in seen or seen in party_name:
+                is_unique = False
+                break
+                
+        if is_unique and len(party_name) > 5:
+            seen_parties.add(party_name)
+            
+            # Try to determine entity type
+            entity_type = "Organization"
+            org_types = [
+                (r"Inc\.|Corporation|Corp\.", "Corporation"),
+                (r"LLC", "Limited Liability Company"),
+                (r"Ltd\.|Limited", "Limited Company"),
+                (r"B\.V\.", "Dutch Private Limited Company"),
+                (r"GmbH", "German Limited Liability Company"),
+                (r"S\.A\.", "Anonymous Society"),
+                (r"LLP", "Limited Liability Partnership")
+            ]
+            
+            for pattern, type_name in org_types:
+                if re.search(pattern, party_name):
+                    entity_type = type_name
+                    break
+            
+            parties.append({
+                "name": party_name,
+                "type": entity_type,
+                "signatories": []
+            })
+    
+    # Process signature sections to find signatories
+    sig_chunks = [last_pages_text[i:i+chunk_size] for i in range(0, len(last_pages_text), chunk_size)]
+    
+    # Use SpaCy to identify people and organizations in signature blocks
+    signature_entities = {
+        "organizations": [],
+        "people": []
+    }
+    
+    for chunk in sig_chunks:
+        doc = nlp(chunk)
+        for ent in doc.ents:
+            if ent.label_ == "ORG":
+                signature_entities["organizations"].append(ent.text)
+            elif ent.label_ == "PERSON":
+                signature_entities["people"].append(ent.text)
+    
+    # Match signature patterns to extract signatories and their roles
+    signature_patterns = [
+        r"(?:For|By):\s*([A-Za-z0-9\s,\.&]+)\s*[_\s-]*\s*(?:Name|Signature):\s*([A-Za-z\s\.-]+)\s*(?:Title|Position):\s*([A-Za-z\s\.-]+)",
+        r"([A-Za-z0-9\s,\.&]+)\s*\n\s*By:\s*[_\s-]*\s*\n\s*Name:\s*([A-Za-z\s\.-]+)\s*\n\s*Title:\s*([A-Za-z\s\.-]+)"
+    ]
+    
+    for pattern in signature_patterns:
+        matches = re.finditer(pattern, last_pages_text, re.IGNORECASE | re.MULTILINE)
+        for match in matches:
+            if len(match.groups()) >= 3:
+                company_name = match.group(1).strip()
+                person_name = match.group(2).strip()
+                title = match.group(3).strip()
+                
+                # Find matching party
+                for party in parties:
+                    # Check if this signatory belongs to this party
+                    if company_name in party["name"] or party["name"] in company_name:
+                        party["signatories"].append({
+                            "name": person_name,
+                            "title": title
+                        })
+                        break
+    
+    # If no signature matches found, try to assign persons from SpaCy NER to parties
+    if all(len(party["signatories"]) == 0 for party in parties) and signature_entities["people"]:
+        # Try to distribute the identified people among parties
+        for i, party in enumerate(parties):
+            if i < len(signature_entities["people"]):
+                party["signatories"].append({
+                    "name": signature_entities["people"][i],
+                    "title": "Signatory" 
+                })
+    
+    return parties
+
+def generate_neo4j_cypher(contract_metadata: Dict[str, Any], articles: List[Dict[str, Any]], parties: List[Dict[str, Any]]) -> List[str]:
+    """Generate Cypher commands for Neo4j database."""
+    cypher_commands = []
+    
+    # Create Contract node
+    contract_cypher = (
+        f"CREATE (c:Contract {{title: '{contract_metadata['title']}', "
+        f"effectiveDate: '{contract_metadata['effective_date']}', "
+        f"documentType: '{contract_metadata['document_type']}' }})"
+    )
+    cypher_commands.append(contract_cypher)
+    
+    # Create Party nodes and relationships to Contract
+    for idx, party in enumerate(parties):
+        party_id = f"p{idx}"
+        party_cypher = (
+            f"CREATE ({party_id}:Party {{name: '{party['name']}', "
+            f"type: '{party['type']}' }})"
+        )
+        cypher_commands.append(party_cypher)
+        
+        # Create relationship between Party and Contract
+        rel_cypher = f"CREATE ({party_id})-[:PARTY_TO]->(c)"
+        cypher_commands.append(rel_cypher)
+        
+        # Create Signatory nodes
+        for sig_idx, signatory in enumerate(party.get("signatories", [])):
+            sig_id = f"s{idx}_{sig_idx}"
+            sig_cypher = (
+                f"CREATE ({sig_id}:Person {{name: '{signatory['name']}', "
+                f"title: '{signatory['title']}' }})"
+            )
+            cypher_commands.append(sig_cypher)
+            
+            # Create relationship between Signatory and Party
+            sig_rel_cypher = f"CREATE ({sig_id})-[:REPRESENTS]->({party_id})"
+            cypher_commands.append(sig_rel_cypher)
+    
+    # Create Article nodes and relationships to Contract
+    for idx, article in enumerate(articles):
+        article_id = f"a{idx}"
+        article_cypher = (
+            f"CREATE ({article_id}:Article {{number: '{article['number']}', "
+            f"title: '{article['title']}' }})"
+        )
+        cypher_commands.append(article_cypher)
+        
+        # Create relationship between Article and Contract
+        art_rel_cypher = f"CREATE (c)-[:CONTAINS]->({article_id})"
+        cypher_commands.append(art_rel_cypher)
+        
+        # Create Section nodes and relationships to Article
+        for sec_idx, section in enumerate(article.get("sections", [])):
+            sec_id = f"s{idx}_{sec_idx}"
+            # Escape single quotes in content
+            content = section.get("content", "").replace("'", "\\'")
+            # Truncate content if too long
+            if len(content) > 500:
+                content = content[:497] + "..."
+                
+            sec_cypher = (
+                f"CREATE ({sec_id}:Section {{number: '{section['number']}', "
+                f"title: '{section['title']}', "
+                f"content: '{content}' }})"
+            )
+            cypher_commands.append(sec_cypher)
+            
+            # Create relationship between Section and Article
+            sec_rel_cypher = f"CREATE ({article_id})-[:HAS_SECTION]->({sec_id})"
+            cypher_commands.append(sec_rel_cypher)
+    
+    return cypher_commands
+
+def process_json_file(input_file: str, output_file: str) -> None:
+    """Process the input JSON file and generate Neo4j Cypher commands."""
+    try:
+        with open(input_file, 'r') as f:
+            data = json.load(f)
+        
+        # Extract metadata, articles, and parties
+        contract_metadata = extract_contract_metadata(data)
+        articles = extract_articles(data)
+        parties = extract_parties(data)
+        
+        # Generate Cypher commands
+        cypher_commands = generate_neo4j_cypher(contract_metadata, articles, parties)
+        
+        # Write Cypher commands to output file
+        with open(output_file, 'w') as f:
+            f.write("// Neo4j Cypher Import Script\n")
+            f.write(f"// Generated on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+            f.write("// This script will create a graph representation of the contract\n\n")
+            
+            # Add a transaction wrapper
+            f.write("BEGIN\n\n")
+            
+            # First, add a statement to clear existing data (commented out by default)
+            f.write("// Uncomment to clear existing data before import\n")
+            f.write("// MATCH (n) DETACH DELETE n;\n\n")
+            
+            # Write each Cypher command
+            for cmd in cypher_commands:
+                f.write(f"{cmd};\n")
+            
+            f.write("\nCOMMIT\n")
+        
+        print(f"Successfully generated Neo4j Cypher commands in {output_file}")
+        
+    except Exception as e:
+        print(f"Error processing JSON file: {e}", file=sys.stderr)
+        sys.exit(1)
+
+def main():
+    """Main entry point for the script."""
+    parser = argparse.ArgumentParser(
+        description="Convert LlamaParse JSON output to Neo4j Cypher commands for graph database import.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+    
+    # Required arguments
+    parser.add_argument("input", help="Path to the input JSON file generated by LlamaParse")
+    
+    args = parser.parse_args()
+    
+    # Output file name is always derived from the input filename
+    base_name = os.path.splitext(args.input)[0]
+    output_file = f"{base_name}.cypher"
+    
+    # Always use en_core_web_sm model
+    try:
+        global nlp
+        nlp = spacy.load("en_core_web_sm")
+    except IOError:
+        print(f"SpaCy model en_core_web_sm not found. Downloading model...")
+        import subprocess
+        subprocess.check_call([sys.executable, "-m", "spacy", "download", "en_core_web_sm"])
+        nlp = spacy.load("en_core_web_sm")
+    
+    # Initialize ContractBERT (now required)
+    print("Initializing ContractBERT for legal text analysis...")
+    if not initialize_contractbert():
+        print("Warning: ContractBERT initialization failed. Results may be less accurate.")
+        print("Proceeding with SpaCy-only analysis.")
+    
+    process_json_file(args.input, output_file)
+    
+if __name__ == "__main__":
+    main()
