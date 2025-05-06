@@ -10,19 +10,26 @@ into a graph representation with nodes for contracts, parties, articles, section
 import re
 import json
 import sys
+import os
 from typing import Dict, List, Any
 from datetime import datetime
 
 
 def generate_neo4j_cypher(contract_metadata: Dict[str, Any], 
                          articles: List[Dict[str, Any]], 
-                         parties: List[Dict[str, Any]]) -> List[str]:
+                         parties: List[Dict[str, Any]], 
+                         document_name: str, 
+                         document_id: str, 
+                         timestamp: str) -> List[str]:
     """Generate Cypher commands for Neo4j database.
     
     Args:
         contract_metadata: Dictionary with contract metadata (title, date, type)
         articles: List of article dictionaries with their sections
         parties: List of party dictionaries with their details
+        document_name: Name of the source document
+        document_id: Identifier of the source document
+        timestamp: Timestamp of the import
         
     Returns:
         List of Cypher commands ready to be executed in Neo4j
@@ -33,7 +40,10 @@ def generate_neo4j_cypher(contract_metadata: Dict[str, Any],
     contract_cypher = (
         f"CREATE (c:Contract {{title: '{contract_metadata['title']}', "
         f"effectiveDate: '{contract_metadata['effective_date']}', "
-        f"documentType: '{contract_metadata['document_type']}' }})"
+        f"documentType: '{contract_metadata['document_type']}', "
+        f"sourceDocument: '{document_name}', "
+        f"documentId: '{document_id}', "
+        f"importTimestamp: '{timestamp}' }})"
     )
     cypher_commands.append(contract_cypher)
     
@@ -42,7 +52,9 @@ def generate_neo4j_cypher(contract_metadata: Dict[str, Any],
         party_id = f"p{idx}"
         party_cypher = (
             f"CREATE ({party_id}:Party {{name: '{party['name']}', "
-            f"type: '{party['type']}' }})"
+            f"type: '{party['type']}', "
+            f"sourceDocument: '{document_name}', "
+            f"documentId: '{document_id}' }})"
         )
         cypher_commands.append(party_cypher)
         
@@ -55,7 +67,9 @@ def generate_neo4j_cypher(contract_metadata: Dict[str, Any],
             sig_id = f"s{idx}_{sig_idx}"
             sig_cypher = (
                 f"CREATE ({sig_id}:Person {{name: '{signatory['name']}', "
-                f"title: '{signatory['title']}' }})"
+                f"title: '{signatory['title']}', "
+                f"sourceDocument: '{document_name}', "
+                f"documentId: '{document_id}' }})"
             )
             cypher_commands.append(sig_cypher)
             
@@ -68,7 +82,9 @@ def generate_neo4j_cypher(contract_metadata: Dict[str, Any],
         article_id = f"a{idx}"
         article_cypher = (
             f"CREATE ({article_id}:Article {{number: '{article['number']}', "
-            f"title: '{article['title']}' }})"
+            f"title: '{article['title']}', "
+            f"sourceDocument: '{document_name}', "
+            f"documentId: '{document_id}' }})"
         )
         cypher_commands.append(article_cypher)
         
@@ -88,7 +104,9 @@ def generate_neo4j_cypher(contract_metadata: Dict[str, Any],
             sec_cypher = (
                 f"CREATE ({sec_id}:Section {{number: '{section['number']}', "
                 f"title: '{section['title']}', "
-                f"content: '{content}' }})"
+                f"content: '{content}', "
+                f"sourceDocument: '{document_name}', "
+                f"documentId: '{document_id}' }})"
             )
             cypher_commands.append(sec_cypher)
             
@@ -146,6 +164,11 @@ def process_json_file(input_file: str, output_file: str,
         extract_parties_func: Function to extract party information
     """
     try:
+        # Get the filename for document tracking
+        document_name = os.path.basename(input_file)
+        document_id = os.path.splitext(document_name)[0]  # Remove extension
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        
         with open(input_file, 'r') as f:
             data = json.load(f)
         
@@ -155,7 +178,7 @@ def process_json_file(input_file: str, output_file: str,
         parties = extract_parties_func(data)
         
         # Generate Cypher commands
-        cypher_commands = generate_neo4j_cypher(contract_metadata, articles, parties)
+        cypher_commands = generate_neo4j_cypher(contract_metadata, articles, parties, document_name, document_id, timestamp)
         
         # Write Cypher commands to output file
         write_cypher_to_file(cypher_commands, output_file)
