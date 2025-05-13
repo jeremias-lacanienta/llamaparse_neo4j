@@ -1,0 +1,170 @@
+#!/usr/bin/env python3
+"""
+JSON to Neo4j Converter
+
+This script converts LlamaParse JSON output to Neo4j Cypher commands for importing
+contract data into a graph database. Uses SpaCy and ContractBERT for enhanced legal text processing.
+"""
+
+import argparse
+import json
+import os
+import sys
+import re
+import spacy
+from typing import Dict, List, Any, Optional
+from datetime import datetime
+
+# Import ContractBERT/transformer libraries
+from transformers import AutoTokenizer, AutoModelForTokenClassification
+from transformers import pipeline, AutoModelForSequenceClassification
+
+# Import extraction functions from extract package
+from extract import extract_contract_metadata, extract_articles, extract_parties
+
+# Import Cypher generation functionality
+from cypher_generator import process_json_file
+
+# Load SpaCy model - using the large model for better accuracy
+nlp = spacy.load("en_core_web_lg")
+
+# Global variables for ContractBERT models
+contractbert_ner = None
+contractbert_classifier = None
+contractbert_tokenizer = None
+
+def initialize_contractbert():
+    """Initialize ContractBERT models for legal text analysis."""
+    global contractbert_ner, contractbert_classifier, contractbert_tokenizer
+    
+    print("Loading ContractBERT models...")
+    # Initialize tokenizer using legal-bert as base
+    contractbert_tokenizer = AutoTokenizer.from_pretrained("nlpaueb/legal-bert-base-uncased")
+    
+    # Load NER model for entity extraction
+    ner_model = AutoModelForTokenClassification.from_pretrained("nlpaueb/legal-bert-base-uncased")
+    contractbert_ner = pipeline("ner", model=ner_model, tokenizer=contractbert_tokenizer, 
+                                aggregation_strategy="simple")
+    
+    # Load classifier for document and clause classification
+    classifier_model = AutoModelForSequenceClassification.from_pretrained("nlpaueb/legal-bert-base-uncased")
+    contractbert_classifier = pipeline("text-classification", model=classifier_model, 
+                                     tokenizer=contractbert_tokenizer)
+    
+    print("ContractBERT models loaded successfully")
+
+def classify_contract_clauses(text):
+    """Use ContractBERT to classify contract clauses by type."""
+    # Split text into chunks of appropriate size for ContractBERT
+    chunks = [text[i:i+450] for i in range(0, len(text), 450)]
+    
+    clause_types = {
+        "DEFINITION": [],
+        "OBLIGATION": [],
+        "CONDITION": [],
+        "TERM": [],
+        "PAYMENT": []
+    }
+    
+    for chunk in chunks:
+        # Process chunk with ContractBERT
+        classification = contractbert_classifier(chunk)
+        
+        # Map classification label to clause type
+        label = classification[0]["label"]
+        score = classification[0]["score"]
+        
+        # Only consider classifications with reasonable confidence
+        if score > 0.6:
+            if "DEFINITION" in label:
+                clause_types["DEFINITION"].append((chunk, score))
+            elif "OBLIGATION" in label:
+                clause_types["OBLIGATION"].append((chunk, score))
+            elif "CONDITION" in label:
+                clause_types["CONDITION"].append((chunk, score))
+            elif "TERM" in label:
+                clause_types["TERM"].append((chunk, score))
+            elif "PAYMENT" in label:
+                clause_types["PAYMENT"].append((chunk, score))
+    
+    return clause_types
+
+def identify_contract_elements(doc):
+    """Use spaCy and ContractBERT to identify contract elements in text."""
+    elements = {
+        "definitions": [],
+        "obligations": [],
+        "conditions": [],
+        "terms": [],
+        "payments": []
+    }
+    
+    # Process each sentence with ContractBERT for classification
+    for sent in doc.sents:
+        if len(sent.text.strip()) < 10:  # Skip very short sentences
+            continue
+            
+        # Classify sentence
+        classification = contractbert_classifier(sent.text[:min(len(sent.text), 450)])
+        label = classification[0]["label"]
+        score = classification[0]["score"]
+        
+        if score > 0.6:
+            if "DEFINITION" in label:
+                elements["definitions"].append(sent.text)
+            elif "OBLIGATION" in label or "REQUIREMENT" in label:
+                elements["obligations"].append(sent.text)
+            elif "CONDITION" in label:
+                elements["conditions"].append(sent.text)
+            elif "TERM" in label:
+                elements["terms"].append(sent.text)
+            elif "PAYMENT" in label or "FINANCIAL" in label:
+                elements["payments"].append(sent.text)
+    
+    return elements
+
+def main():
+    """Main entry point for the script."""
+    parser = argparse.ArgumentParser(
+        description="Convert LlamaParse JSON output to Neo4j Cypher commands for graph database import.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+    
+    # Required arguments
+    parser.add_argument("input", help="Path to the input JSON file generated by LlamaParse")
+    
+    args = parser.parse_args()
+    
+    # Output file name is always derived from the input filename
+    base_name = os.path.splitext(args.input)[0]
+    output_file = f"{base_name}.cypher"
+    
+    # Initialize ContractBERT
+    print("Initializing ContractBERT for legal text analysis...")
+    initialize_contractbert()
+    
+    try:
+        # Create wrapped extraction functions that include the NLP models
+        def extract_metadata_with_models(data):
+            return extract_contract_metadata(data, nlp, contractbert_ner, contractbert_classifier)
+            
+        def extract_articles_with_nlp(data):
+            return extract_articles(data, nlp, contractbert_ner)
+            
+        def extract_parties_with_nlp(data):
+            return extract_parties(data, nlp, contractbert_ner)
+        
+        # Call the process_json_file function with our extraction functions
+        process_json_file(
+            args.input, 
+            output_file,
+            extract_metadata_with_models,
+            extract_articles_with_nlp,
+            extract_parties_with_nlp
+        )
+    except Exception as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
+    
+if __name__ == "__main__":
+    main()

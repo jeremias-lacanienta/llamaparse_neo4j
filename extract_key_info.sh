@@ -1,24 +1,18 @@
 #!/bin/bash
 
-# contract_enhancer.sh - Script to enhance contract JSON with NLP
-# Usage: ./contract_enhancer.sh [input_json_file]
+# extract_key_info.sh - Script to extract key contract information to Markdown
+# Usage: ./extract_key_info.sh [JSON_FILE]
 
 # Make sure we're in the right directory
 cd "$(dirname "$0")"
 
-# Load environment variables from .env file (removing references to LlamaParse)
-if [ -f .env ]; then
-  echo "Loading environment variables from .env file..."
-  export $(grep -v '^#' .env | xargs)
-fi
-
-# Define the path to the input JSON file
-JSON_FILE=${1:-"./data/sample_contract.json"}
+# Define the path to the sample JSON
+JSON_FILE=${1:-"./data/sample_contract_enhanced.json"}
 
 # Check if the JSON file exists
 if [ ! -f "$JSON_FILE" ]; then
   echo "Error: $JSON_FILE not found."
-  echo "Please provide a valid JSON file path."
+  echo "Usage: ./extract_key_info.sh [path/to/contract.json]"
   exit 1
 fi
 
@@ -68,22 +62,31 @@ if ! python -c "from transformers import pipeline; pipeline('token-classificatio
   exit 1
 fi
 
-# Run the converter script
-echo "Enhancing contract JSON with NLP analysis..."
-python src/llamaparse_converter.py "$JSON_FILE"
+# Check for the classifier model
+if ! python -c "from transformers import pipeline; pipeline('text-classification', model='nlpaueb/legal-bert-base-uncased')" &> /dev/null; then
+  echo "Error: Unable to initialize ContractBERT classification model."
+  echo "Please ensure you have proper internet connection and the models can be downloaded."
+  deactivate
+  exit 1
+fi
+
+# Run the extraction script
+echo "Extracting key information from contract JSON..."
+export PYTHONPATH="${PYTHONPATH:-.}:$(pwd)"
+python src/extract_key_info.py "$JSON_FILE"
 
 # Save exit status
 EXIT_STATUS=$?
 
 # Deactivate virtual environment
-# deactivate
+deactivate
 
 # Check the exit status
 if [ $EXIT_STATUS -ne 0 ]; then
-  # Only print error message if the conversion failed
-  echo "Enhancement failed. Check the logs for details."
+  # Only print error message if the extraction failed
+  echo "Extraction failed. Check the logs for details."
 else
   # Get the output filename
-  OUTPUT_FILE="${JSON_FILE%.*}_enhanced.json"
-  echo "Successfully enhanced contract data: $OUTPUT_FILE"
+  OUTPUT_FILE="${JSON_FILE%.*}_key_info.md"
+  echo "Successfully extracted key information to: $OUTPUT_FILE"
 fi

@@ -90,7 +90,7 @@ DOC_TYPES = {
 
 # Date context patterns for effective date identification
 DATE_CONTEXTS = [
-    "effective date",
+    "effective date",  # This should match with or without colon
     "dated as of",
     "agreement date",
     "executed on",
@@ -134,3 +134,38 @@ PARTY_INDICATORS = [
     r"([A-Za-z0-9\s,\.]+?(?:\(\".*?\"\)))",  # Company name followed by defined term in quotes
     r"([A-Za-z0-9\s,\.]+?(?:\([A-Za-z0-9\s,\.]+?\)))"  # Company name followed by jurisdiction in parentheses
 ]
+
+# Financial pattern matching for monetary values
+FINANCIAL_PATTERNS = [
+    r'\$(\d{1,3}(?:,\d{3})*(?:\.\d+)?)',  # $X,XXX.XX format
+    r'(\d{1,3}(?:,\d{3})*(?:\.\d+)?) dollars',  # X,XXX.XX dollars
+    r'(\d+(?:\.\d+)?) percent',  # X percent
+    r'(\d+(?:\.\d+)?)%',  # X%
+    r'sum of (\d{1,3}(?:,\d{3})*(?:\.\d+)?)',  # sum of X,XXX.XX
+    r'payment of (\d{1,3}(?:,\d{3})*(?:\.\d+)?)',  # payment of X,XXX.XX
+    r'fee of (\d{1,3}(?:,\d{3})*(?:\.\d+)?)'  # fee of X,XXX.XX
+]
+
+# Date pattern matching for various date formats
+DATE_PATTERNS = [
+    r'(\d{1,2}\/\d{1,2}\/\d{2,4})',  # MM/DD/YYYY, M/D/YY
+    r'([A-Z][a-z]+ \d{1,2}, \d{4})',  # Month DD, YYYY
+    r'(\d{1,2} [A-Z][a-z]+ \d{4})',  # DD Month YYYY
+    r'within (\d+) (?:days|weeks|months|years)',  # within X days/weeks/months
+    r'(\d+) (?:days|weeks|months|years) (?:after|from|of)'  # X days/weeks/months after/from
+]
+
+# Key legal terms pattern matching
+KEY_TERM_PATTERNS = {
+    'effective date': r'effective date',
+    'termination': r'termination|terminate|terminat(?:e|ion|ing)',
+    'confidentiality': r'confidential|confidentiality',
+    'intellectual property': r'intellectual property|IP rights|patent|copyright|trademark',
+    'payment terms': r'payment terms|payment schedule|fee schedule',
+    'dispute resolution': r'dispute resolution|arbitration|mediation|litigation',
+    'governing law': r'governing law|applicable law|jurisdiction',
+    'force majeure': r'force majeure|act of god',
+    'indemnification': r'indemnification|indemnify|hold harmless|indemnity',
+    'limitation of liability': r'limitation of liability|liability limit',
+    'warranty': r'warranty|warranties|warrants'
+}

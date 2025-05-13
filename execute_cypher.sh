@@ -5,7 +5,7 @@
 # Configuration variables - customize these
 NEO4J_USER="neo4j"
 NEO4J_PASSWORD="MS110008%5g3"  # Updated with actual password
-CYPHER_FILE="/Users/jlacanienta/Projects/llamaparse_neo4j/data/sample_contract.cypher"
+CYPHER_FILE="./data/sample_contract_enhanced.cypher"
 TEMP_FILE="/tmp/neo4j_cypher_temp.cypher"
 
 # ANSI color codes for better output formatting

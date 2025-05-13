@@ -1,0 +1,183 @@
+# 📄 Contract Summary: {{ key_info.metadata.title|default('Untitled Contract') }}
+
+*Generated on {{ generated_on }}*
+
+## 📊 Executive Summary
+
+<div style='background-color: #f8f9fa; padding: 15px; border-radius: 5px; border-left: 5px solid #007bff;'>
+
+### Key Highlights
+
+**Type:** {{ key_info.metadata.document_type|default('Contract') }}
+
+**Parties:** {% if key_info.parties %}{{ key_info.parties|map(attribute='name')|list|join(', ') }}{% if key_info.parties|length > 3 %} and others{% endif %}{% else %}Not specified{% endif %}
+
+**Effective Date:** {{ key_info.metadata.effective_date|default('Not specified') }}
+
+{% if key_info.financials %}
+{% set critical_financials = [] %}
+{% for financial in key_info.financials %}
+    {% if 'revenue' in financial.context|lower or 'split' in financial.context|lower or 
+          'million' in financial.context|lower or '$1' in financial.amount or 
+          '$2' in financial.amount or '$5' in financial.amount %}
+        {% set critical_financials = critical_financials + [financial] %}
+    {% endif %}
+{% endfor %}
+{% if critical_financials %}
+**Critical Financial Terms:**
+{% for cf in critical_financials[:3] %}
+- {{ cf.amount }} - {{ cf.context[:50] + '...' if cf.context|length > 50 else cf.context }}
+{% endfor %}
+{% endif %}
+{% endif %}
+
+</div>
+
+## 📝 Contract Metadata
+
+**Title:** {{ key_info.metadata.title|default('N/A') }}
+
+**Type:** {{ key_info.metadata.document_type|default('Contract') }}
+
+**Effective Date:** {{ key_info.metadata.effective_date|default('Not specified') }}
+
+## 👥 Parties Involved
+
+| Party | Type | Signatories |
+|-------|------|-------------|
+{% for party in key_info.parties %}
+| **{{ party.name|default('Unknown') }}** | {{ party.type|default('Organization') }} | {% if party.signatories %}{% for sig in party.signatories %}{{ sig.name|default('Unknown') }} ({{ sig.title|default('Unknown') }}){% if not loop.last %}<br>{% endif %}{% endfor %}{% else %}-{% endif %} |
+{% else %}
+| No parties identified | - | - |
+{% endfor %}
+
+{% if key_info.named_entities %}
+## 🔍 Key Entities Identified
+
+{% if key_info.named_entities.ORG %}
+### Organizations
+
+| # | Name | Possible Role |
+|---|------|---------------|
+{% for org in key_info.named_entities.ORG[:10] %}
+{% set is_party = false %}
+{% for party in key_info.parties %}
+  {% if org in party.name %}
+    {% set is_party = true %}
+  {% endif %}
+{% endfor %}
+{% set role = "Contract Party" if is_party else 
+            ("Financial Institution" if "bank" in org.lower() or "financial" in org.lower() or "lender" in org.lower() else 
+            ("Regulatory Body" if "court" in org.lower() or "commission" in org.lower() or "authority" in org.lower() else "Unknown")) %}
+| {{ loop.index }} | **{{ org }}** | {{ role }} |
+{% endfor %}
+
+{% endif %}
+
+{% if key_info.named_entities.GPE %}
+### Locations
+
+{% for loc in key_info.named_entities.GPE[:8] %}
+{{ loop.index }}. {{ loc }}
+{% endfor %}
+
+{% endif %}
+
+{% if key_info.named_entities.LAW %}
+### Legal References
+
+{% for law in key_info.named_entities.LAW[:8] %}
+{{ loop.index }}. {{ law }}
+{% endfor %}
+
+{% endif %}
+{% endif %}
+
+## 📋 Key Provisions
+
+{% for provision in key_info.key_provisions %}
+{% set emoji = "⏱️" if "term" in provision.title.lower() or "duration" in provision.title.lower() else
+             ("💰" if "payment" in provision.title.lower() or "financial" in provision.title.lower() else
+             ("🛑" if "terminat" in provision.title.lower() else
+             ("🔒" if "confidential" in provision.title.lower() else
+             ("💡" if "intellect" in provision.title.lower() or "property" in provision.title.lower() else
+             ("⚖️" if "govern" in provision.title.lower() or "law" in provision.title.lower() else "📄"))))) %}
+### {{ emoji }} {{ provision.number }} {{ provision.title }}
+
+{{ provision.summary|default('No summary available.') }}
+
+{% else %}
+No key provisions identified.
+{% endfor %}
+
+{% if key_info.financials %}
+## 💰 Financial Terms
+
+| # | Amount | Type | Context | Importance |
+|---|--------|------|---------|------------|
+{% for financial in key_info.financials %}
+{% set fin_type = "Percentage" if "%" in financial.amount else
+                ("Milestone" if "certification" in financial.context|lower or "approval" in financial.context|lower else
+                ("Revenue Split" if "revenue" in financial.context|lower or "split" in financial.context|lower else
+                ("Liability Cap" if "liability" in financial.context|lower or "cap" in financial.context|lower else
+                ("Fee" if "fee" in financial.context|lower else
+                ("Royalty" if "royalty" in financial.context|lower else "Payment"))))) %}
+{% set importance = "⭐⭐ **CRITICAL**" if "revenue" in financial.context|lower or "split" in financial.context|lower else "" %}
+{% if not importance and "$" in financial.amount %}
+    {% set digits = financial.amount|replace("$", "")|replace(",", "")|float(0) %}
+    {% if digits >= 1000000 %}
+        {% set importance = "⭐⭐ **HIGH**" %}
+    {% elif digits >= 100000 %}
+        {% set importance = "⭐ **MEDIUM**" %}
+    {% endif %}
+{% endif %}
+{% set short_context = financial.context[:47] + "..." if financial.context|length > 50 else financial.context %}
+| {{ loop.index }} | **{{ financial.amount }}** | {{ fin_type }} | {{ short_context }} | {{ importance }} |
+{% endfor %}
+
+{% endif %}
+
+{% if key_info.key_dates %}
+## 📅 Key Dates & Deadlines
+
+| # | Date/Period | Context | Importance |
+|---|------------|---------|------------|
+{% for date_item in key_info.key_dates %}
+{% set importance = "⭐⭐ **CRITICAL**" if "effective" in date_item.context|lower or "execution" in date_item.context|lower or "commence" in date_item.context|lower else
+                  ("⭐⭐ **HIGH**" if "termination" in date_item.context|lower or "expiration" in date_item.context|lower or "expire" in date_item.context|lower else
+                  ("⭐ **MEDIUM**" if "deadline" in date_item.context|lower or "milestone" in date_item.context|lower or "payment" in date_item.context|lower else "")) %}
+{% set short_context = date_item.context[:47] + "..." if date_item.context|length > 50 else date_item.context %}
+| {{ loop.index }} | **{{ date_item.date }}** | {{ short_context }} | {{ importance }} |
+{% endfor %}
+
+{% endif %}
+
+{% if key_info.key_terms %}
+## ⚖️ Key Legal Terms
+
+{% for term_name, contexts in key_info.key_terms.items() %}
+{% set emoji = "🔒" if "confidential" in term_name else
+             ("🛑" if "terminat" in term_name else
+             ("💡" if "intellectual" in term_name or "property" in term_name else
+             ("⚠️" if "indemnif" in term_name or "liabil" in term_name else
+             ("⚖️" if "governing" in term_name or "law" in term_name else
+             ("🌪️" if "force majeure" in term_name else
+             ("⚔️" if "dispute" in term_name else
+             ("💰" if "payment" in term_name else "📝"))))))) %}
+### {{ emoji }} {{ term_name|title }}
+
+<details>
+<summary>Click to expand relevant sections ({{ contexts|length }})</summary>
+
+{% for context in contexts %}
+{{ loop.index }}. "...{{ context }}..."
+
+{% endfor %}
+</details>
+
+{% endfor %}
+{% endif %}
+
+---
+
+*This summary was automatically generated using SpaCy and ContractBERT natural language processing. While comprehensive, it may not capture all important details of the contract. Please refer to the original document for complete and legally binding information.*

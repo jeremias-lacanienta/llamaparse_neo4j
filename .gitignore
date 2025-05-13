@@ -12,3 +12,6 @@ logs/
 
 # Environment files
 .env
+
+# Backup files
+llamaparse_neo4j_backup_*.zip

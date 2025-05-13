@@ -1,10 +1,16 @@
 # Python 3.9 specific requirements
 # Base dependencies that need to be installed first to avoid build issues
 numpy>=1.19.0,<1.25.0  # More specific upper bound to avoid setup issues
+cython>=0.29.0
+scipy>=1.7.0,<1.11.0
+
+# LlamaParse API client library
+llama-parse>=0.1.0
 
 # Core NLP dependencies - these only work reliably with Python 3.9
 spacy>=3.7.0
-en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.0/en_core_web_sm-3.7.0-py3-none-any.whl
+# Use large spaCy model instead of small model for better NLP processing
+en-core-web-lg @ https://github.com/explosion/spacy-models/releases/download/en_core_web_lg-3.7.0/en_core_web_lg-3.7.0-py3-none-any.whl
 
 # SpaCy dependencies that might be needed for better compatibility
 thinc>=8.1.0
@@ -28,6 +34,9 @@ cloudpickle>=2.0.0
 beautifulsoup4>=4.9.0
 dateparser>=1.0.0
 Unidecode>=1.3.0
+
+# Templating for Markdown generation
+jinja2>=3.0.0
 
 # Optional dependencies for additional functionality
 elasticsearch>=8.0.0

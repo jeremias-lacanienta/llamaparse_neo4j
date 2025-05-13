@@ -7,7 +7,7 @@
 cd "$(dirname "$0")"
 
 # Define the path to the sample JSON file (default)
-DEFAULT_JSON_FILE="./data/sample_contract.json"
+DEFAULT_JSON_FILE="./data/sample_contract_enhanced.json"
 JSON_FILE=${1:-$DEFAULT_JSON_FILE}
 
 # Check if the JSON file exists
@@ -32,34 +32,44 @@ fi
 echo "Using Python 3.9 virtual environment..."
 source .venv-3.9/bin/activate
 
-# Install dependencies in the correct order to avoid setup issues
-echo "Starting dependency installation..."
+# Check for spaCy and ContractBERT dependencies
+echo "Checking for required dependencies..."
 
-# First, ensure pip is up-to-date
-python -m pip install --upgrade pip setuptools wheel
+# Check for spaCy
+if ! python -c "import spacy" &> /dev/null; then
+  echo "Error: spaCy is not installed in the virtual environment."
+  echo "Please install it first with: pip install spacy"
+  deactivate
+  exit 1
+fi
 
-# Install critical dependencies one by one to avoid conflicts
-echo "Installing critical dependencies..."
-pip install -q --no-cache-dir "numpy==1.23.5"
-pip install -q --no-cache-dir "cython>=0.29.0"
-pip install -q --no-cache-dir "scipy>=1.7.0,<1.11.0"
-pip install -q --no-cache-dir "torch>=1.10.0,<2.0.0"
-pip install -q --no-cache-dir "transformers>=4.15.0,<4.30.0"
+# Check for spaCy model
+if ! python -c "import spacy; spacy.load('en_core_web_lg')" &> /dev/null; then
+  echo "Error: SpaCy model 'en_core_web_lg' not found."
+  echo "Please install it with: python -m spacy download en_core_web_lg"
+  deactivate
+  exit 1
+fi
 
-# Install remaining dependencies
-echo "Installing remaining Python 3.9 specific requirements..."
-pip install -q -r requirements-3.9.txt
+# Check for transformers (ContractBERT dependency)
+if ! python -c "import transformers" &> /dev/null; then
+  echo "Error: transformers library (required for ContractBERT) is not installed."
+  echo "Please install it first with: pip install transformers"
+  deactivate
+  exit 1
+fi
 
-# Install spaCy model if not already installed
-echo "Checking for spaCy model..."
-if ! python -c "import spacy; spacy.load('en_core_web_sm')" &> /dev/null; then
-  echo "SpaCy model not found. Installing en_core_web_sm model..."
-  python -m spacy download en_core_web_sm
+# Check if we can initialize transformers pipeline (basic ContractBERT functionality)
+if ! python -c "from transformers import pipeline; pipeline('text-classification', model='nlpaueb/legal-bert-base-uncased')" &> /dev/null; then
+  echo "Error: Unable to initialize ContractBERT models."
+  echo "Please ensure you have proper internet connection and the models can be downloaded."
+  deactivate
+  exit 1
 fi
 
 # Run the converter script
-echo "Running Neo4j converter with Python 3.9 and ContractBERT..."
-python json_to_neo4j.py "$JSON_FILE"
+echo "Running Neo4j converter with Python 3.9, ContractBERT, and SpaCy large model..."
+python src/json_to_neo4j.py "$JSON_FILE"
 
 # Save exit status
 EXIT_STATUS=$?
