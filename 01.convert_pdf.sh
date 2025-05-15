@@ -1,13 +1,21 @@
 #!/bin/bash
+# Convert PDF to various formats using LlamaParse
 
-# convert_pdf.sh - Script to convert PDF files to JSON, Markdown, and text formats using LlamaParse
-# Usage: ./convert_pdf.sh [input_pdf_file]
+# ANSI color codes for better output formatting
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+echo -e "${YELLOW}PDF Converter (LlamaParse)${NC}"
+echo ""
 
 # Make sure we're in the right directory
 cd "$(dirname "$0")"
 
-# Set default values
-PDF_FILE=${1:-"./sample_contract.pdf"}
+# Set fixed values
+PDF_FILE="./sample_contract.pdf"
 OUTPUT_DIR="./data"
 PDF_BASENAME=$(basename "$PDF_FILE" .pdf)
 OUTPUT_BASE="${OUTPUT_DIR}/${PDF_BASENAME}"
@@ -22,13 +30,6 @@ fi
 if [ -z "${LLAMA_CLOUD_API_KEY}" ]; then
   echo "Error: LLAMA_CLOUD_API_KEY environment variable not set."
   echo "Please set it in your .env file or export it directly."
-  exit 1
-fi
-
-# Check if the PDF file exists
-if [ ! -f "$PDF_FILE" ]; then
-  echo "Error: $PDF_FILE not found."
-  echo "Please provide a valid PDF file path."
   exit 1
 fi
 
@@ -58,17 +59,17 @@ if ! command -v llama-parse &> /dev/null; then
 fi
 
 # Convert to JSON format
-echo "Converting $PDF_FILE to JSON format..."
+echo -e "${YELLOW}Converting $PDF_FILE to JSON format...${NC}"
 llama-parse "$PDF_FILE" --output-raw-json --output-file "${OUTPUT_BASE}.json"
 JSON_STATUS=$?
 
 # Convert to Markdown format
-echo "Converting $PDF_FILE to Markdown format..."
+echo -e "${YELLOW}Converting $PDF_FILE to Markdown format...${NC}"
 llama-parse "$PDF_FILE" --result-type markdown --output-file "${OUTPUT_BASE}.md"
 MD_STATUS=$?
 
 # Convert to text format
-echo "Converting $PDF_FILE to text format..."
+echo -e "${YELLOW}Converting $PDF_FILE to text format...${NC}"
 llama-parse "$PDF_FILE" --result-type text --output-file "${OUTPUT_BASE}.txt"
 TXT_STATUS=$?
 
@@ -77,12 +78,13 @@ deactivate
 
 # Check the exit status
 if [ $JSON_STATUS -ne 0 ] || [ $MD_STATUS -ne 0 ] || [ $TXT_STATUS -ne 0 ]; then
-  echo "Error: One or more conversions failed. Check the output for details."
+  echo -e "${RED}❌ Error: One or more conversions failed. Check the output for details.${NC}"
   exit 1
 else
-  echo "Conversion completed successfully!"
-  echo "Output files:"
-  echo "  JSON: ${OUTPUT_BASE}.json"
-  echo "  Markdown: ${OUTPUT_BASE}.md"
-  echo "  Text: ${OUTPUT_BASE}.txt"
+  echo -e "${GREEN}✅ All conversions completed successfully.${NC}"
+  echo -e "${BLUE}Output files:${NC}"
+  echo -e "  JSON: ${OUTPUT_BASE}.json"
+  echo -e "  Markdown: ${OUTPUT_BASE}.md"
+  echo -e "  Text: ${OUTPUT_BASE}.txt"
+  exit 0
 fi

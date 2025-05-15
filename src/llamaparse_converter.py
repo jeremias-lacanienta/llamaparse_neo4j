@@ -145,17 +145,67 @@ def enhance_with_nlp(parsed_data):
     
     return enhanced_data
 
+def enhance_text_file(txt_file, output_file=None):
+    """Enhance text content from a TXT file with NLP analysis."""
+    # If output file not specified, create one based on input file name
+    if not output_file:
+        output_file = os.path.splitext(txt_file)[0] + "_enhanced.json"
+    
+    try:
+        print(f"Reading TXT file: {txt_file}")
+        with open(txt_file, 'r', encoding='utf-8') as f:
+            text_content = f.read()
+        
+        # Create a JSON-like structure that the enhance_with_nlp function can work with
+        simulated_json = {
+            "metadata": {
+                "source": "txt_fallback",
+                "file": os.path.basename(txt_file),
+                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            },
+            "pages": [{"text": text_content}]
+        }
+        
+        # Enhance with NLP
+        enhanced_data = enhance_with_nlp(simulated_json)
+        
+        # Write output to file
+        with open(output_file, 'w') as f:
+            json.dump(enhanced_data, f, indent=2)
+            
+        print(f"Successfully enhanced TXT data and saved to: {output_file}")
+        return enhanced_data
+        
+    except Exception as e:
+        print(f"Error enhancing TXT data: {e}")
+        sys.exit(1)
+
 def main():
-    """Main function for CLI usage."""
-    parser = argparse.ArgumentParser(description="Enhance contract JSON with NLP analysis")
+    """Main function to process command line arguments."""
+    # Set up argument parser
+    parser = argparse.ArgumentParser(description='Enhance contract JSON with NLP analysis')
+    parser.add_argument('--json', '-j', type=str, default="./data/sample_contract.json",
+                        help='Path to the input JSON file')
+    parser.add_argument('--txt', '-t', type=str, default="./data/sample_contract.txt",
+                        help='Path to the fallback TXT file if JSON processing fails')
+    parser.add_argument('--output', '-o', type=str, default="./data/sample_contract_enhanced.json",
+                        help='Path to the output enhanced JSON file')
     
-    parser.add_argument("input", help="Path to the input JSON file containing contract data")
-    parser.add_argument("-o", "--output", help="Path to save the enhanced JSON (defaults to input_enhanced.json)")
-    
+    # Parse arguments
     args = parser.parse_args()
+    json_file = args.json
+    txt_file = args.txt
+    output_file = args.output
     
-    # Process the contract JSON
-    enhance_contract_json(args.input, args.output)
+    # Try to process JSON first
+    try:
+        print(f"Processing JSON file: {json_file}")
+        enhance_contract_json(json_file, output_file)
+    except Exception as e:
+        # If JSON processing fails, use TXT fallback
+        print(f"JSON processing failed: {e}")
+        print(f"Using TXT fallback: {txt_file}")
+        enhance_text_file(txt_file, output_file)
 
 if __name__ == "__main__":
     main()

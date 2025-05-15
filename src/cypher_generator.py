@@ -150,18 +150,28 @@ def write_cypher_to_file(cypher_commands: List[str], output_file: str) -> None:
         raise
 
 
-def process_json_file(input_file: str, output_file: str, 
-                     extract_contract_metadata_func,
-                     extract_articles_func,
-                     extract_parties_func) -> None:
+def process_json_file(input_file: str, output_file: str,
+                     metadata: Dict[str, Any],
+                     articles: List[Dict[str, Any]],
+                     parties: List[Dict[str, Any]],
+                     key_provisions: List[Dict[str, Any]] = None,
+                     financials: List[Dict[str, Any]] = None,
+                     dates: List[Dict[str, Any]] = None,
+                     terms: Dict[str, List[str]] = None,
+                     entities: Dict[str, List[str]] = None) -> None:
     """Process the input JSON file and generate Neo4j Cypher commands.
     
     Args:
         input_file: Path to the input JSON file
         output_file: Path to the output Cypher file
-        extract_contract_metadata_func: Function to extract contract metadata
-        extract_articles_func: Function to extract articles and sections
-        extract_parties_func: Function to extract party information
+        metadata: Contract metadata (title, date, type)
+        articles: List of articles with their sections
+        parties: List of parties with their details
+        key_provisions: List of key provisions extracted from the contract
+        financials: List of financial mentions with context
+        dates: List of date mentions with context
+        terms: Dictionary of key legal terms with context examples
+        entities: Dictionary of named entities by entity type
     """
     try:
         # Get the filename for document tracking
@@ -169,16 +179,36 @@ def process_json_file(input_file: str, output_file: str,
         document_id = os.path.splitext(document_name)[0]  # Remove extension
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         
-        with open(input_file, 'r') as f:
-            data = json.load(f)
+        # Generate basic Cypher commands
+        cypher_commands = generate_neo4j_cypher(
+            metadata, articles, parties, document_name, document_id, timestamp
+        )
         
-        # Extract metadata, articles, and parties using the provided functions
-        contract_metadata = extract_contract_metadata_func(data)
-        articles = extract_articles_func(data)
-        parties = extract_parties_func(data)
-        
-        # Generate Cypher commands
-        cypher_commands = generate_neo4j_cypher(contract_metadata, articles, parties, document_name, document_id, timestamp)
+        # Generate additional Cypher commands for the enhanced data
+        if key_provisions:
+            cypher_commands.extend(
+                generate_key_provisions_cypher(key_provisions, document_name, document_id)
+            )
+            
+        if financials:
+            cypher_commands.extend(
+                generate_financials_cypher(financials, document_name, document_id)
+            )
+            
+        if dates:
+            cypher_commands.extend(
+                generate_dates_cypher(dates, document_name, document_id)
+            )
+            
+        if terms:
+            cypher_commands.extend(
+                generate_terms_cypher(terms, document_name, document_id)
+            )
+            
+        if entities:
+            cypher_commands.extend(
+                generate_entities_cypher(entities, document_name, document_id)
+            )
         
         # Write Cypher commands to output file
         write_cypher_to_file(cypher_commands, output_file)
@@ -188,3 +218,225 @@ def process_json_file(input_file: str, output_file: str,
     except Exception as e:
         print(f"Error processing JSON file: {e}", file=sys.stderr)
         raise
+
+
+def generate_key_provisions_cypher(key_provisions: List[Dict[str, Any]], 
+                                 document_name: str, 
+                                 document_id: str) -> List[str]:
+    """Generate Cypher commands for key provisions.
+    
+    Args:
+        key_provisions: List of key provisions
+        document_name: Name of the source document
+        document_id: Identifier of the source document
+        
+    Returns:
+        List of Cypher commands for key provisions
+    """
+    cypher_commands = []
+    
+    # Find the contract node reference
+    contract_ref = "(c:Contract {documentId: '" + document_id + "'})"
+    
+    for idx, provision in enumerate(key_provisions):
+        # Clean text for Cypher query
+        number = provision.get("number", "").replace("'", "\\'")
+        title = provision.get("title", "").replace("'", "\\'")
+        summary = provision.get("summary", "").replace("'", "\\'")
+        
+        # Create a unique ID for the provision node
+        provision_id = f"kp{idx}"
+        
+        # Create provision node
+        provision_cypher = (
+            f"CREATE ({provision_id}:KeyProvision {{number: '{number}', "
+            f"title: '{title}', "
+            f"summary: '{summary}', "
+            f"sourceDocument: '{document_name}', "
+            f"documentId: '{document_id}' }})"
+        )
+        cypher_commands.append(provision_cypher)
+        
+        # Link to contract
+        rel_cypher = f"MATCH {contract_ref} CREATE (c)-[:HAS_KEY_PROVISION]->({provision_id})"
+        cypher_commands.append(rel_cypher)
+    
+    return cypher_commands
+
+
+def generate_financials_cypher(financials: List[Dict[str, Any]],
+                             document_name: str,
+                             document_id: str) -> List[str]:
+    """Generate Cypher commands for financial mentions.
+    
+    Args:
+        financials: List of financial mentions with context
+        document_name: Name of the source document
+        document_id: Identifier of the source document
+        
+    Returns:
+        List of Cypher commands for financial mentions
+    """
+    cypher_commands = []
+    
+    # Find the contract node reference
+    contract_ref = "(c:Contract {documentId: '" + document_id + "'})"
+    
+    for idx, financial in enumerate(financials):
+        # Clean text for Cypher query
+        amount = financial.get("amount", "").replace("'", "\\'")
+        context = financial.get("context", "").replace("'", "\\'")
+        
+        # Create a unique ID for the financial node
+        financial_id = f"f{idx}"
+        
+        # Create financial node
+        financial_cypher = (
+            f"CREATE ({financial_id}:Financial {{amount: '{amount}', "
+            f"context: '{context}', "
+            f"sourceDocument: '{document_name}', "
+            f"documentId: '{document_id}' }})"
+        )
+        cypher_commands.append(financial_cypher)
+        
+        # Link to contract
+        rel_cypher = f"MATCH {contract_ref} CREATE (c)-[:HAS_FINANCIAL]->({financial_id})"
+        cypher_commands.append(rel_cypher)
+    
+    return cypher_commands
+
+
+def generate_dates_cypher(dates: List[Dict[str, Any]],
+                        document_name: str,
+                        document_id: str) -> List[str]:
+    """Generate Cypher commands for date mentions.
+    
+    Args:
+        dates: List of date mentions with context
+        document_name: Name of the source document
+        document_id: Identifier of the source document
+        
+    Returns:
+        List of Cypher commands for date mentions
+    """
+    cypher_commands = []
+    
+    # Find the contract node reference
+    contract_ref = "(c:Contract {documentId: '" + document_id + "'})"
+    
+    for idx, date in enumerate(dates):
+        # Clean text for Cypher query
+        date_value = date.get("date", "").replace("'", "\\'")
+        context = date.get("context", "").replace("'", "\\'")
+        
+        # Create a unique ID for the date node
+        date_id = f"d{idx}"
+        
+        # Create date node
+        date_cypher = (
+            f"CREATE ({date_id}:Date {{value: '{date_value}', "
+            f"context: '{context}', "
+            f"sourceDocument: '{document_name}', "
+            f"documentId: '{document_id}' }})"
+        )
+        cypher_commands.append(date_cypher)
+        
+        # Link to contract
+        rel_cypher = f"MATCH {contract_ref} CREATE (c)-[:HAS_DATE]->({date_id})"
+        cypher_commands.append(rel_cypher)
+    
+    return cypher_commands
+
+
+def generate_terms_cypher(terms: Dict[str, List[str]],
+                        document_name: str,
+                        document_id: str) -> List[str]:
+    """Generate Cypher commands for key legal terms.
+    
+    Args:
+        terms: Dictionary of key legal terms with their contexts
+        document_name: Name of the source document
+        document_id: Identifier of the source document
+        
+    Returns:
+        List of Cypher commands for key legal terms
+    """
+    cypher_commands = []
+    
+    # Find the contract node reference
+    contract_ref = "(c:Contract {documentId: '" + document_id + "'})"
+    
+    for term_name, contexts in terms.items():
+        # Clean text for Cypher query
+        term_name_clean = term_name.replace("'", "\\'")
+        
+        # Create a sanitized term ID for the node
+        term_id = f"t_{term_name.lower().replace(' ', '_')}"
+        
+        # Create term node with bullet-point formatted contexts
+        contexts_clean = []
+        for context in contexts:
+            contexts_clean.append(context.replace("'", "\\'"))
+        
+        bullet_points = "• " + "\n• ".join(contexts_clean)
+        
+        term_cypher = (
+            f"CREATE ({term_id}:Term {{name: '{term_name_clean}', "
+            f"contexts: '{bullet_points}', "
+            f"sourceDocument: '{document_name}', "
+            f"documentId: '{document_id}' }})"
+        )
+        cypher_commands.append(term_cypher)
+        
+        # Link to contract
+        rel_cypher = f"MATCH {contract_ref} CREATE (c)-[:HAS_TERM]->({term_id})"
+        cypher_commands.append(rel_cypher)
+    
+    return cypher_commands
+
+
+def generate_entities_cypher(entities: Dict[str, List[str]],
+                           document_name: str,
+                           document_id: str) -> List[str]:
+    """Generate Cypher commands for named entities.
+    
+    Args:
+        entities: Dictionary of named entities by entity type
+        document_name: Name of the source document
+        document_id: Identifier of the source document
+        
+    Returns:
+        List of Cypher commands for named entities
+    """
+    cypher_commands = []
+    
+    # Find the contract node reference
+    contract_ref = "(c:Contract {documentId: '" + document_id + "'})"
+    
+    for entity_type, entity_list in entities.items():
+        # Clean entity type for Cypher query
+        entity_type_clean = entity_type.replace("'", "\\'")
+        
+        # Create a sanitized entity ID for the node
+        entity_id = f"e_{entity_type.lower()}"
+        
+        # Create entity values as bullet points
+        entity_values_clean = []
+        for entity in entity_list:
+            entity_values_clean.append(entity.replace("'", "\\'"))
+        
+        bullet_points = "• " + "\n• ".join(entity_values_clean)
+        
+        entity_cypher = (
+            f"CREATE ({entity_id}:Entity {{type: '{entity_type_clean}', "
+            f"values: '{bullet_points}', "
+            f"sourceDocument: '{document_name}', "
+            f"documentId: '{document_id}' }})"
+        )
+        cypher_commands.append(entity_cypher)
+        
+        # Link to contract
+        rel_cypher = f"MATCH {contract_ref} CREATE (c)-[:HAS_ENTITY]->({entity_id})"
+        cypher_commands.append(rel_cypher)
+    
+    return cypher_commands

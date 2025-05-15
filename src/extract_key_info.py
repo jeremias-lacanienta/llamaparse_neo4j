@@ -14,9 +14,9 @@ Requirements:
 
 import os
 import json
-import argparse
 import re
 import sys
+import argparse
 from datetime import datetime
 from typing import Dict, List, Any, Optional
 
@@ -411,31 +411,25 @@ def generate_markdown(key_info: Dict[str, Any], output_file: str):
 
 
 def main():
-    """Main function to parse arguments and execute the extraction process."""
-    parser = argparse.ArgumentParser(
-        description="Extract key information from contracts and export to Markdown.",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter
-    )
+    """Main function to process command line arguments."""
+    # Set up argument parser
+    parser = argparse.ArgumentParser(description='Extract key information from contract JSON data')
+    parser.add_argument('--input', '-i', type=str, default="./data/sample_contract_enhanced.json",
+                        help='Path to the input JSON file containing contract data')
+    parser.add_argument('--output', '-o', type=str, default="./data/sample_contract_key_info.md",
+                        help='Path to the output Markdown file for the extracted information')
     
-    parser.add_argument("input_file", 
-                      help="Path to the JSON file containing the contract data")
-    
-    parser.add_argument("-o", "--output", 
-                      help="Path to the output Markdown file. If not specified, uses input name with .md extension")
-    
+    # Parse arguments
     args = parser.parse_args()
-    
-    # Generate output filename if not provided
-    if not args.output:
-        base_name = os.path.splitext(args.input_file)[0]
-        args.output = f"{base_name}_key_info.md"
+    input_file = args.input
+    output_file = args.output
     
     # Extract information and generate Markdown
     try:
-        print(f"Extracting key information from: {args.input_file}")
-        key_info = extract_key_information(args.input_file)
-        generate_markdown(key_info, args.output)
-        print(f"Successfully generated Markdown summary: {args.output}")
+        print(f"Extracting key information from: {input_file}")
+        key_info = extract_key_information(input_file)
+        generate_markdown(key_info, output_file)
+        print(f"Successfully generated Markdown summary: {output_file}")
     except Exception as e:
         print(f"Error processing contract: {e}")
         raise

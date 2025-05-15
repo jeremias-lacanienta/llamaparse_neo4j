@@ -1,0 +1,1463 @@
+[
+  {
+    "pages": [
+      {
+        "page": 1,
+        "text": "JOINT TECHNOLOGY DEVELOPMENT AND LICENSING AGREEMENT\nBetween\nOmniSynapse Technologies, Inc.\n(a Delaware Corporation)\nand\nNeuroCore International B.V.\n(a Netherlands Besloten Vennootschap)\nEffective Date: April 29, 2025\nARTICLE I - DEFINITIONS\n1.1 \"Affiliate\" shall mean any entity directly or indirectly controlling, controlled by, or under common control with a Party.\n1.2 \"Background IP\" shall mean any Intellectual Property owned or controlled by a Party prior to or independent of the\nEffective Date.\n1.3  \"Foreground IP\" shall mean   any Intellectual Property developed  jointly or individually in the course of this\nAgreement.\n1.4  \"Field of Use\" shall mean   exclusively neural-responsive biofeedback  technology  for cognitive rehabilitation\napplications.\n1.5 \"Net Revenue\" shall mean gross income derived from commercial exploitation, less reasonable, documented\nexpenses incurred.\nARTICLE II - PURPOSE AND SCOPE\n2.1 The Parties agree to collaborate on the design, development, and global commercialization of a joint technology\nplatform (\"Joint Platform\") for the Field of Use.\n2.2 The scope includes co-development of software algorithms, hardware integration, and AI model training datasets\nsourced from anonymized clinical trials.",
+        "md": "# JOINT TECHNOLOGY DEVELOPMENT AND LICENSING AGREEMENT\n\nBetween\n\nOmniSynapse Technologies, Inc. (a Delaware Corporation)\n\nand\n\nNeuroCore International B.V. (a Netherlands Besloten Vennootschap)\n\nEffective Date: April 29, 2025\n\n# ARTICLE I - DEFINITIONS\n\n1.1 \"Affiliate\" shall mean any entity directly or indirectly controlling, controlled by, or under common control with a Party.\n\n1.2 \"Background IP\" shall mean any Intellectual Property owned or controlled by a Party prior to or independent of the Effective Date.\n\n1.3 \"Foreground IP\" shall mean any Intellectual Property developed jointly or individually in the course of this Agreement.\n\n1.4 \"Field of Use\" shall mean exclusively neural-responsive biofeedback technology for cognitive rehabilitation applications.\n\n1.5 \"Net Revenue\" shall mean gross income derived from commercial exploitation, less reasonable, documented expenses incurred.\n\n# ARTICLE II - PURPOSE AND SCOPE\n\n2.1 The Parties agree to collaborate on the design, development, and global commercialization of a joint technology platform (\"Joint Platform\") for the Field of Use.\n\n2.2 The scope includes co-development of software algorithms, hardware integration, and AI model training datasets sourced from anonymized clinical trials.",
+        "images": [],
+        "charts": [],
+        "items": [
+          {
+            "type": "heading",
+            "lvl": 1,
+            "value": "JOINT TECHNOLOGY DEVELOPMENT AND LICENSING AGREEMENT",
+            "md": "# JOINT TECHNOLOGY DEVELOPMENT AND LICENSING AGREEMENT",
+            "bBox": {
+              "x": 31,
+              "y": 63.89,
+              "w": 440,
+              "h": 464
+            }
+          },
+          {
+            "type": "text",
+            "value": "Between\n\nOmniSynapse Technologies, Inc. (a Delaware Corporation)\n\nand\n\nNeuroCore International B.V. (a Netherlands Besloten Vennootschap)\n\nEffective Date: April 29, 2025",
+            "md": "Between\n\nOmniSynapse Technologies, Inc. (a Delaware Corporation)\n\nand\n\nNeuroCore International B.V. (a Netherlands Besloten Vennootschap)\n\nEffective Date: April 29, 2025",
+            "bBox": {
+              "x": 31,
+              "y": 92.89,
+              "w": 460,
+              "h": 378
+            }
+          },
+          {
+            "type": "heading",
+            "lvl": 1,
+            "value": "ARTICLE I - DEFINITIONS",
+            "md": "# ARTICLE I - DEFINITIONS",
+            "bBox": {
+              "x": 31,
+              "y": 347.89,
+              "w": 440,
+              "h": 123
+            }
+          },
+          {
+            "type": "text",
+            "value": "1.1 \"Affiliate\" shall mean any entity directly or indirectly controlling, controlled by, or under common control with a Party.\n\n1.2 \"Background IP\" shall mean any Intellectual Property owned or controlled by a Party prior to or independent of the Effective Date.\n\n1.3 \"Foreground IP\" shall mean any Intellectual Property developed jointly or individually in the course of this Agreement.\n\n1.4 \"Field of Use\" shall mean exclusively neural-responsive biofeedback technology for cognitive rehabilitation applications.\n\n1.5 \"Net Revenue\" shall mean gross income derived from commercial exploitation, less reasonable, documented expenses incurred.",
+            "md": "1.1 \"Affiliate\" shall mean any entity directly or indirectly controlling, controlled by, or under common control with a Party.\n\n1.2 \"Background IP\" shall mean any Intellectual Property owned or controlled by a Party prior to or independent of the Effective Date.\n\n1.3 \"Foreground IP\" shall mean any Intellectual Property developed jointly or individually in the course of this Agreement.\n\n1.4 \"Field of Use\" shall mean exclusively neural-responsive biofeedback technology for cognitive rehabilitation applications.\n\n1.5 \"Net Revenue\" shall mean gross income derived from commercial exploitation, less reasonable, documented expenses incurred.",
+            "bBox": {
+              "x": 31,
+              "y": 375.89,
+              "w": 533,
+              "h": 237
+            }
+          },
+          {
+            "type": "heading",
+            "lvl": 1,
+            "value": "ARTICLE II - PURPOSE AND SCOPE",
+            "md": "# ARTICLE II - PURPOSE AND SCOPE",
+            "bBox": {
+              "x": 31,
+              "y": 177.89,
+              "w": 170,
+              "h": 492
+            }
+          },
+          {
+            "type": "text",
+            "value": "2.1 The Parties agree to collaborate on the design, development, and global commercialization of a joint technology platform (\"Joint Platform\") for the Field of Use.\n\n2.2 The scope includes co-development of software algorithms, hardware integration, and AI model training datasets sourced from anonymized clinical trials.",
+            "md": "2.1 The Parties agree to collaborate on the design, development, and global commercialization of a joint technology platform (\"Joint Platform\") for the Field of Use.\n\n2.2 The scope includes co-development of software algorithms, hardware integration, and AI model training datasets sourced from anonymized clinical trials.",
+            "bBox": {
+              "x": 31,
+              "y": 177.89,
+              "w": 533,
+              "h": 605
+            }
+          }
+        ],
+        "status": "OK",
+        "originalOrientationAngle": 0,
+        "links": [],
+        "width": 595.28,
+        "height": 841.89,
+        "triggeredAutoMode": false,
+        "parsingMode": "accurate",
+        "structuredData": null,
+        "noStructuredContent": false,
+        "noTextContent": false,
+        "confidence": 0.998,
+        "nlp_annotations": {
+          "entities": [
+            {
+              "text": "JOINT TECHNOLOGY DEVELOPMENT",
+              "label": "ORG",
+              "start": 0,
+              "end": 28
+            },
+            {
+              "text": "OmniSynapse Technologies, Inc.",
+              "label": "ORG",
+              "start": 61,
+              "end": 91
+            },
+            {
+              "text": "Delaware Corporation",
+              "label": "ORG",
+              "start": 95,
+              "end": 115
+            },
+            {
+              "text": "International B.V.",
+              "label": "ORG",
+              "start": 131,
+              "end": 149
+            },
+            {
+              "text": "Netherlands",
+              "label": "GPE",
+              "start": 153,
+              "end": 164
+            },
+            {
+              "text": "Besloten Vennootschap",
+              "label": "PERSON",
+              "start": 165,
+              "end": 186
+            },
+            {
+              "text": "April 29",
+              "label": "DATE",
+              "start": 204,
+              "end": 212
+            },
+            {
+              "text": "2025",
+              "label": "DATE",
+              "start": 214,
+              "end": 218
+            },
+            {
+              "text": "1.1",
+              "label": "CARDINAL",
+              "start": 243,
+              "end": 246
+            },
+            {
+              "text": "Party",
+              "label": "ORG",
+              "start": 363,
+              "end": 368
+            },
+            {
+              "text": "1.2",
+              "label": "CARDINAL",
+              "start": 370,
+              "end": 373
+            },
+            {
+              "text": "Intellectual Property",
+              "label": "ORG",
+              "start": 405,
+              "end": 426
+            },
+            {
+              "text": "Party",
+              "label": "ORG",
+              "start": 452,
+              "end": 457
+            },
+            {
+              "text": "1.3",
+              "label": "CARDINAL",
+              "start": 505,
+              "end": 508
+            },
+            {
+              "text": "Foreground IP",
+              "label": "WORK_OF_ART",
+              "start": 511,
+              "end": 524
+            },
+            {
+              "text": "Intellectual Property",
+              "label": "ORG",
+              "start": 543,
+              "end": 564
+            },
+            {
+              "text": "1.4",
+              "label": "CARDINAL",
+              "start": 633,
+              "end": 636
+            },
+            {
+              "text": "Field of Use",
+              "label": "WORK_OF_ART",
+              "start": 639,
+              "end": 651
+            },
+            {
+              "text": "1.5",
+              "label": "CARDINAL",
+              "start": 764,
+              "end": 767
+            },
+            {
+              "text": "ARTICLE II",
+              "label": "LAW",
+              "start": 891,
+              "end": 901
+            },
+            {
+              "text": "2.1",
+              "label": "CARDINAL",
+              "start": 922,
+              "end": 925
+            },
+            {
+              "text": "Joint Platform",
+              "label": "WORK_OF_ART",
+              "start": 1049,
+              "end": 1063
+            },
+            {
+              "text": "the Field of Use",
+              "label": "ORG",
+              "start": 1070,
+              "end": 1086
+            },
+            {
+              "text": "2.2",
+              "label": "CARDINAL",
+              "start": 1088,
+              "end": 1091
+            },
+            {
+              "text": "AI",
+              "label": "PRODUCT",
+              "start": 1176,
+              "end": 1178
+            }
+          ]
+        }
+      },
+      {
+        "page": 2,
+        "text": "ARTICLE III - GOVERNANCE STRUCTURE\n3.1 Joint Steering Committee (JSC)\n- Comprised of 3 representatives from each Party.\n- Meets quarterly (or ad hoc) to review milestones and budget allocations.\n- Decisions shall be made by supermajority (i.e., 4 of 6 votes).\n3.2 Deadlock Resolution\n- If the JSC reaches an impasse exceeding 30 days, the matter shall be escalated to the respective CEOs.\n- If unresolved within 60 days, mediation in The Hague under ICC rules shall be mandatory before arbitration.\nARTICLE IV - INTELLECTUAL PROPERTY\n4.1 Ownership\n- Background IP remains with the contributing Party.\n- Foreground IP created solely by one Party shall be owned by that Party, but licensed to the other under Clause 4.3.\n- Jointly developed Foreground IP shall be co-owned on a 50/50 basis.\n4.2 Prosecution and Maintenance\n- Each Party is responsible for prosecuting and maintaining its own IP.\n- Joint IP shall be prosecuted by NeuroCore, with costs shared pro rata.\n4.3 Licensing\n- OmniSynapse grants NeuroCore a perpetual, royalty-free, sublicensable license to its Background IP strictly within the\nField of Use.\n- NeuroCore grants OmniSynapse a non-exclusive, royalty-bearing license to deploy clinical datasets worldwide outside\nof the Field of Use.\nARTICLE V - COMMERCIAL TERMS\n5.1 Revenue Sharing\n- Net Revenues shall be split 60% (NeuroCore) / 40% (OmniSynapse), subject to annual audit and reconciliation.",
+        "md": "# ARTICLE III - GOVERNANCE STRUCTURE\n\n# 3.1 Joint Steering Committee (JSC)\n\n- Comprised of 3 representatives from each Party.\n- Meets quarterly (or ad hoc) to review milestones and budget allocations.\n- Decisions shall be made by supermajority (i.e., 4 of 6 votes).\n\n# 3.2 Deadlock Resolution\n\n- If the JSC reaches an impasse exceeding 30 days, the matter shall be escalated to the respective CEOs.\n- If unresolved within 60 days, mediation in The Hague under ICC rules shall be mandatory before arbitration.\n\n# ARTICLE IV - INTELLECTUAL PROPERTY\n\n# 4.1 Ownership\n\n- Background IP remains with the contributing Party.\n- Foreground IP created solely by one Party shall be owned by that Party, but licensed to the other under Clause 4.3.\n- Jointly developed Foreground IP shall be co-owned on a 50/50 basis.\n\n# 4.2 Prosecution and Maintenance\n\n- Each Party is responsible for prosecuting and maintaining its own IP.\n- Joint IP shall be prosecuted by NeuroCore, with costs shared pro rata.\n\n# 4.3 Licensing\n\n- OmniSynapse grants NeuroCore a perpetual, royalty-free, sublicensable license to its Background IP strictly within the Field of Use.\n- NeuroCore grants OmniSynapse a non-exclusive, royalty-bearing license to deploy clinical datasets worldwide outside of the Field of Use.\n\n# ARTICLE V - COMMERCIAL TERMS\n\n# 5.1 Revenue Sharing\n\n- Net Revenues shall be split 60% (NeuroCore) / 40% (OmniSynapse), subject to annual audit and reconciliation.",
+        "images": [],
+        "charts": [],
+        "items": [
+          {
+            "type": "heading",
+            "lvl": 1,
+            "value": "ARTICLE III - GOVERNANCE STRUCTURE",
+            "md": "# ARTICLE III - GOVERNANCE STRUCTURE",
+            "bBox": {
+              "x": 31,
+              "y": 63.89,
+              "w": 198,
+              "h": 10
+            }
+          },
+          {
+            "type": "heading",
+            "lvl": 1,
+            "value": "3.1 Joint Steering Committee (JSC)",
+            "md": "# 3.1 Joint Steering Committee (JSC)",
+            "bBox": {
+              "x": 31,
+              "y": 92.89,
+              "w": 157,
+              "h": 10
+            }
+          },
+          {
+            "type": "text",
+            "value": "- Comprised of 3 representatives from each Party.\n- Meets quarterly (or ad hoc) to review milestones and budget allocations.\n- Decisions shall be made by supermajority (i.e., 4 of 6 votes).",
+            "md": "- Comprised of 3 representatives from each Party.\n- Meets quarterly (or ad hoc) to review milestones and budget allocations.\n- Decisions shall be made by supermajority (i.e., 4 of 6 votes).",
+            "bBox": {
+              "x": 31,
+              "y": 120.89,
+              "w": 325,
+              "h": 67
+            }
+          },
+          {
+            "type": "heading",
+            "lvl": 1,
+            "value": "3.2 Deadlock Resolution",
+            "md": "# 3.2 Deadlock Resolution",
+            "bBox": {
+              "x": 31,
+              "y": 205.89,
+              "w": 108,
+              "h": 10
+            }
+          },
+          {
+            "type": "text",
+            "value": "- If the JSC reaches an impasse exceeding 30 days, the matter shall be escalated to the respective CEOs.\n- If unresolved within 60 days, mediation in The Hague under ICC rules shall be mandatory before arbitration.",
+            "md": "- If the JSC reaches an impasse exceeding 30 days, the matter shall be escalated to the respective CEOs.\n- If unresolved within 60 days, mediation in The Hague under ICC rules shall be mandatory before arbitration.",
+            "bBox": {
+              "x": 31,
+              "y": 234.89,
+              "w": 482,
+              "h": 38
+            }
+          },
+          {
+            "type": "heading",
+            "lvl": 1,
+            "value": "ARTICLE IV - INTELLECTUAL PROPERTY",
+            "md": "# ARTICLE IV - INTELLECTUAL PROPERTY",
+            "bBox": {
+              "x": 31,
+              "y": 319.89,
+              "w": 194,
+              "h": 10
+            }
+          },
+          {
+            "type": "heading",
+            "lvl": 1,
+            "value": "4.1 Ownership",
+            "md": "# 4.1 Ownership",
+            "bBox": {
+              "x": 31,
+              "y": 347.89,
+              "w": 64,
+              "h": 10
+            }
+          },
+          {
+            "type": "text",
+            "value": "- Background IP remains with the contributing Party.\n- Foreground IP created solely by one Party shall be owned by that Party, but licensed to the other under Clause 4.3.\n- Jointly developed Foreground IP shall be co-owned on a 50/50 basis.",
+            "md": "- Background IP remains with the contributing Party.\n- Foreground IP created solely by one Party shall be owned by that Party, but licensed to the other under Clause 4.3.\n- Jointly developed Foreground IP shall be co-owned on a 50/50 basis.",
+            "bBox": {
+              "x": 31,
+              "y": 375.89,
+              "w": 516,
+              "h": 67
+            }
+          },
+          {
+            "type": "heading",
+            "lvl": 1,
+            "value": "4.2 Prosecution and Maintenance",
+            "md": "# 4.2 Prosecution and Maintenance",
+            "bBox": {
+              "x": 31,
+              "y": 460.89,
+              "w": 149,
+              "h": 10
+            }
+          },
+          {
+            "type": "text",
+            "value": "- Each Party is responsible for prosecuting and maintaining its own IP.\n- Joint IP shall be prosecuted by NeuroCore, with costs shared pro rata.",
+            "md": "- Each Party is responsible for prosecuting and maintaining its own IP.\n- Joint IP shall be prosecuted by NeuroCore, with costs shared pro rata.",
+            "bBox": {
+              "x": 31,
+              "y": 489.89,
+              "w": 317,
+              "h": 38
+            }
+          },
+          {
+            "type": "heading",
+            "lvl": 1,
+            "value": "4.3 Licensing",
+            "md": "# 4.3 Licensing",
+            "bBox": {
+              "x": 31,
+              "y": 545.89,
+              "w": 59,
+              "h": 10
+            }
+          },
+          {
+            "type": "text",
+            "value": "- OmniSynapse grants NeuroCore a perpetual, royalty-free, sublicensable license to its Background IP strictly within the Field of Use.\n- NeuroCore grants OmniSynapse a non-exclusive, royalty-bearing license to deploy clinical datasets worldwide outside of the Field of Use.",
+            "md": "- OmniSynapse grants NeuroCore a perpetual, royalty-free, sublicensable license to its Background IP strictly within the Field of Use.\n- NeuroCore grants OmniSynapse a non-exclusive, royalty-bearing license to deploy clinical datasets worldwide outside of the Field of Use.",
+            "bBox": {
+              "x": 31,
+              "y": 574.89,
+              "w": 533,
+              "h": 95
+            }
+          },
+          {
+            "type": "heading",
+            "lvl": 1,
+            "value": "ARTICLE V - COMMERCIAL TERMS",
+            "md": "# ARTICLE V - COMMERCIAL TERMS",
+            "bBox": {
+              "x": 31,
+              "y": 715.89,
+              "w": 166,
+              "h": 10
+            }
+          },
+          {
+            "type": "heading",
+            "lvl": 1,
+            "value": "5.1 Revenue Sharing",
+            "md": "# 5.1 Revenue Sharing",
+            "bBox": {
+              "x": 31,
+              "y": 744.89,
+              "w": 94,
+              "h": 10
+            }
+          },
+          {
+            "type": "text",
+            "value": "- Net Revenues shall be split 60% (NeuroCore) / 40% (OmniSynapse), subject to annual audit and reconciliation.",
+            "md": "- Net Revenues shall be split 60% (NeuroCore) / 40% (OmniSynapse), subject to annual audit and reconciliation.",
+            "bBox": {
+              "x": 31,
+              "y": 772.89,
+              "w": 498,
+              "h": 10
+            }
+          }
+        ],
+        "status": "OK",
+        "originalOrientationAngle": 0,
+        "links": [],
+        "width": 595.28,
+        "height": 841.89,
+        "triggeredAutoMode": false,
+        "parsingMode": "accurate",
+        "structuredData": null,
+        "noStructuredContent": false,
+        "noTextContent": false,
+        "confidence": 0.999,
+        "nlp_annotations": {
+          "entities": [
+            {
+              "text": "ARTICLE III - GOVERNANCE",
+              "label": "LAW",
+              "start": 0,
+              "end": 24
+            },
+            {
+              "text": "3.1",
+              "label": "CARDINAL",
+              "start": 35,
+              "end": 38
+            },
+            {
+              "text": "Joint Steering Committee",
+              "label": "ORG",
+              "start": 39,
+              "end": 63
+            },
+            {
+              "text": "3",
+              "label": "CARDINAL",
+              "start": 85,
+              "end": 86
+            },
+            {
+              "text": "Party",
+              "label": "ORG",
+              "start": 113,
+              "end": 118
+            },
+            {
+              "text": "quarterly",
+              "label": "DATE",
+              "start": 128,
+              "end": 137
+            },
+            {
+              "text": "4",
+              "label": "CARDINAL",
+              "start": 245,
+              "end": 246
+            },
+            {
+              "text": "6",
+              "label": "CARDINAL",
+              "start": 250,
+              "end": 251
+            },
+            {
+              "text": "3.2 Deadlock Resolution",
+              "label": "QUANTITY",
+              "start": 260,
+              "end": 283
+            },
+            {
+              "text": "JSC",
+              "label": "ORG",
+              "start": 293,
+              "end": 296
+            },
+            {
+              "text": "30 days",
+              "label": "DATE",
+              "start": 326,
+              "end": 333
+            },
+            {
+              "text": "60 days",
+              "label": "DATE",
+              "start": 412,
+              "end": 419
+            },
+            {
+              "text": "The Hague",
+              "label": "GPE",
+              "start": 434,
+              "end": 443
+            },
+            {
+              "text": "ICC",
+              "label": "ORG",
+              "start": 450,
+              "end": 453
+            },
+            {
+              "text": "ARTICLE IV - INTELLECTUAL",
+              "label": "LAW",
+              "start": 499,
+              "end": 524
+            },
+            {
+              "text": "4.1",
+              "label": "CARDINAL",
+              "start": 534,
+              "end": 537
+            },
+            {
+              "text": "Party",
+              "label": "ORG",
+              "start": 594,
+              "end": 599
+            },
+            {
+              "text": "one",
+              "label": "CARDINAL",
+              "start": 635,
+              "end": 638
+            },
+            {
+              "text": "Party",
+              "label": "ORG",
+              "start": 639,
+              "end": 644
+            },
+            {
+              "text": "Party",
+              "label": "ORG",
+              "start": 668,
+              "end": 673
+            },
+            {
+              "text": "50/50",
+              "label": "CARDINAL",
+              "start": 776,
+              "end": 781
+            },
+            {
+              "text": "4.2",
+              "label": "CARDINAL",
+              "start": 789,
+              "end": 792
+            },
+            {
+              "text": "Party",
+              "label": "ORG",
+              "start": 828,
+              "end": 833
+            },
+            {
+              "text": "4.3",
+              "label": "CARDINAL",
+              "start": 966,
+              "end": 969
+            },
+            {
+              "text": "OmniSynapse",
+              "label": "ORG",
+              "start": 982,
+              "end": 993
+            },
+            {
+              "text": "OmniSynapse",
+              "label": "ORG",
+              "start": 1134,
+              "end": 1145
+            },
+            {
+              "text": "the Field of Use",
+              "label": "ORG",
+              "start": 1236,
+              "end": 1252
+            },
+            {
+              "text": "ARTICLE V - COMMERCIAL",
+              "label": "LAW",
+              "start": 1254,
+              "end": 1276
+            },
+            {
+              "text": "5.1",
+              "label": "CARDINAL",
+              "start": 1283,
+              "end": 1286
+            },
+            {
+              "text": "60%",
+              "label": "PERCENT",
+              "start": 1333,
+              "end": 1336
+            },
+            {
+              "text": "40%",
+              "label": "PERCENT",
+              "start": 1351,
+              "end": 1354
+            },
+            {
+              "text": "OmniSynapse",
+              "label": "ORG",
+              "start": 1356,
+              "end": 1367
+            },
+            {
+              "text": "annual",
+              "label": "DATE",
+              "start": 1381,
+              "end": 1387
+            }
+          ]
+        }
+      },
+      {
+        "page": 3,
+        "text": "5.2 Milestone Payments\n- $2,500,000 upon achievement of ISO 13485 certification.\n- $5,000,000 upon CE Mark approval of the Joint Platform.\n5.3 Audit Rights\n- Either Party may audit the other's records once per year upon 30 days' notice, at its own cost. Discrepancies\nexceeding 5% shall trigger full reimbursement plus 10% interest.\nARTICLE VI - TERM AND TERMINATION\n6.1 Term\n- Initial term: 10 years from Effective Date. Automatically renewable unless terminated under this Article.\n6.2 Termination for Cause\n- If a material breach is not cured within 90 days of notice, the non-breaching Party may terminate this Agreement.\n6.3 Effects of Termination\n- License  rights granted  prior to termination remain   in effect for 5 years  post-termination, subject  to continued\ncompliance.\n- All Foreground IP jointly developed remains co-owned and exploitable by either Party.\nARTICLE VII - REPRESENTATIONS AND WARRANTIES\n7.1 Each Party represents that it:\n- Has full authority to enter into this Agreement.\n- Is not bound by conflicting obligations.\n- Will not knowingly infringe on third-party IP.\nARTICLE VIII - INDEMNIFICATION AND LIMITATION OF LIABILITY\n8.1 Indemnification\n- Each Party shall indemnify the other from any third-party claim arising from its breach, negligence, or willful\nmisconduct.",
+        "md": "# 5.2 Milestone Payments\n\n- $2,500,000 upon achievement of ISO 13485 certification.\n- $5,000,000 upon CE Mark approval of the Joint Platform.\n\n# 5.3 Audit Rights\n\n- Either Party may audit the other's records once per year upon 30 days' notice, at its own cost. Discrepancies exceeding 5% shall trigger full reimbursement plus 10% interest.\n\n# ARTICLE VI - TERM AND TERMINATION\n\n# 6.1 Term\n\n- Initial term: 10 years from Effective Date. Automatically renewable unless terminated under this Article.\n\n# 6.2 Termination for Cause\n\n- If a material breach is not cured within 90 days of notice, the non-breaching Party may terminate this Agreement.\n\n# 6.3 Effects of Termination\n\n- License rights granted prior to termination remain in effect for 5 years post-termination, subject to continued compliance.\n- All Foreground IP jointly developed remains co-owned and exploitable by either Party.\n\n# ARTICLE VII - REPRESENTATIONS AND WARRANTIES\n\n# 7.1 Each Party represents that it:\n\n- Has full authority to enter into this Agreement.\n- Is not bound by conflicting obligations.\n- Will not knowingly infringe on third-party IP.\n\n# ARTICLE VIII - INDEMNIFICATION AND LIMITATION OF LIABILITY\n\n# 8.1 Indemnification\n\n- Each Party shall indemnify the other from any third-party claim arising from its breach, negligence, or willful misconduct.",
+        "images": [],
+        "charts": [],
+        "items": [
+          {
+            "type": "heading",
+            "lvl": 1,
+            "value": "5.2 Milestone Payments",
+            "md": "# 5.2 Milestone Payments",
+            "bBox": {
+              "x": 31,
+              "y": 35.89,
+              "w": 483,
+              "h": 379
+            }
+          },
+          {
+            "type": "text",
+            "value": "- $2,500,000 upon achievement of ISO 13485 certification.\n- $5,000,000 upon CE Mark approval of the Joint Platform.",
+            "md": "- $2,500,000 upon achievement of ISO 13485 certification.\n- $5,000,000 upon CE Mark approval of the Joint Platform.",
+            "bBox": {
+              "x": 31,
+              "y": 63.89,
+              "w": 483,
+              "h": 351
+            }
+          },
+          {
+            "type": "heading",
+            "lvl": 1,
+            "value": "5.3 Audit Rights",
+            "md": "# 5.3 Audit Rights",
+            "bBox": {
+              "x": 31,
+              "y": 120.89,
+              "w": 321,
+              "h": 294
+            }
+          },
+          {
+            "type": "text",
+            "value": "- Either Party may audit the other's records once per year upon 30 days' notice, at its own cost. Discrepancies exceeding 5% shall trigger full reimbursement plus 10% interest.",
+            "md": "- Either Party may audit the other's records once per year upon 30 days' notice, at its own cost. Discrepancies exceeding 5% shall trigger full reimbursement plus 10% interest.",
+            "bBox": {
+              "x": 31,
+              "y": 149.89,
+              "w": 533,
+              "h": 265
+            }
+          },
+          {
+            "type": "heading",
+            "lvl": 1,
+            "value": "ARTICLE VI - TERM AND TERMINATION",
+            "md": "# ARTICLE VI - TERM AND TERMINATION",
+            "bBox": {
+              "x": 31,
+              "y": 234.89,
+              "w": 261,
+              "h": 180
+            }
+          },
+          {
+            "type": "heading",
+            "lvl": 1,
+            "value": "6.1 Term",
+            "md": "# 6.1 Term",
+            "bBox": {
+              "x": 31,
+              "y": 262.89,
+              "w": 40,
+              "h": 10
+            }
+          },
+          {
+            "type": "text",
+            "value": "- Initial term: 10 years from Effective Date. Automatically renewable unless terminated under this Article.",
+            "md": "- Initial term: 10 years from Effective Date. Automatically renewable unless terminated under this Article.",
+            "bBox": {
+              "x": 31,
+              "y": 290.89,
+              "w": 483,
+              "h": 124
+            }
+          },
+          {
+            "type": "heading",
+            "lvl": 1,
+            "value": "6.2 Termination for Cause",
+            "md": "# 6.2 Termination for Cause",
+            "bBox": {
+              "x": 31,
+              "y": 319.89,
+              "w": 309,
+              "h": 95
+            }
+          },
+          {
+            "type": "text",
+            "value": "- If a material breach is not cured within 90 days of notice, the non-breaching Party may terminate this Agreement.",
+            "md": "- If a material breach is not cured within 90 days of notice, the non-breaching Party may terminate this Agreement.",
+            "bBox": {
+              "x": 31,
+              "y": 347.89,
+              "w": 504,
+              "h": 67
+            }
+          },
+          {
+            "type": "heading",
+            "lvl": 1,
+            "value": "6.3 Effects of Termination",
+            "md": "# 6.3 Effects of Termination",
+            "bBox": {
+              "x": 31,
+              "y": 375.89,
+              "w": 290,
+              "h": 39
+            }
+          },
+          {
+            "type": "text",
+            "value": "- License rights granted prior to termination remain in effect for 5 years post-termination, subject to continued compliance.\n- All Foreground IP jointly developed remains co-owned and exploitable by either Party.",
+            "md": "- License rights granted prior to termination remain in effect for 5 years post-termination, subject to continued compliance.\n- All Foreground IP jointly developed remains co-owned and exploitable by either Party.",
+            "bBox": {
+              "x": 31,
+              "y": 404.89,
+              "w": 532,
+              "h": 66
+            }
+          },
+          {
+            "type": "heading",
+            "lvl": 1,
+            "value": "ARTICLE VII - REPRESENTATIONS AND WARRANTIES",
+            "md": "# ARTICLE VII - REPRESENTATIONS AND WARRANTIES",
+            "bBox": {
+              "x": 31,
+              "y": 404.89,
+              "w": 258,
+              "h": 123
+            }
+          },
+          {
+            "type": "heading",
+            "lvl": 1,
+            "value": "7.1 Each Party represents that it:",
+            "md": "# 7.1 Each Party represents that it:",
+            "bBox": {
+              "x": 31,
+              "y": 545.89,
+              "w": 146,
+              "h": 10
+            }
+          },
+          {
+            "type": "text",
+            "value": "- Has full authority to enter into this Agreement.\n- Is not bound by conflicting obligations.\n- Will not knowingly infringe on third-party IP.",
+            "md": "- Has full authority to enter into this Agreement.\n- Is not bound by conflicting obligations.\n- Will not knowingly infringe on third-party IP.",
+            "bBox": {
+              "x": 31,
+              "y": 404.89,
+              "w": 483,
+              "h": 236
+            }
+          },
+          {
+            "type": "heading",
+            "lvl": 1,
+            "value": "ARTICLE VIII - INDEMNIFICATION AND LIMITATION OF LIABILITY",
+            "md": "# ARTICLE VIII - INDEMNIFICATION AND LIMITATION OF LIABILITY",
+            "bBox": {
+              "x": 31,
+              "y": 404.89,
+              "w": 306,
+              "h": 293
+            }
+          },
+          {
+            "type": "heading",
+            "lvl": 1,
+            "value": "8.1 Indemnification",
+            "md": "# 8.1 Indemnification",
+            "bBox": {
+              "x": 31,
+              "y": 404.89,
+              "w": 261,
+              "h": 321
+            }
+          },
+          {
+            "type": "text",
+            "value": "- Each Party shall indemnify the other from any third-party claim arising from its breach, negligence, or willful misconduct.",
+            "md": "- Each Party shall indemnify the other from any third-party claim arising from its breach, negligence, or willful misconduct.",
+            "bBox": {
+              "x": 31,
+              "y": 404.89,
+              "w": 533,
+              "h": 378
+            }
+          }
+        ],
+        "status": "OK",
+        "originalOrientationAngle": 0,
+        "links": [],
+        "width": 595.28,
+        "height": 841.89,
+        "triggeredAutoMode": false,
+        "parsingMode": "accurate",
+        "structuredData": null,
+        "noStructuredContent": false,
+        "noTextContent": false,
+        "confidence": 0.998,
+        "nlp_annotations": {
+          "entities": [
+            {
+              "text": "5.2",
+              "label": "CARDINAL",
+              "start": 0,
+              "end": 3
+            },
+            {
+              "text": "2,500,000",
+              "label": "MONEY",
+              "start": 26,
+              "end": 35
+            },
+            {
+              "text": "ISO 13485",
+              "label": "ORG",
+              "start": 56,
+              "end": 65
+            },
+            {
+              "text": "5,000,000",
+              "label": "MONEY",
+              "start": 84,
+              "end": 93
+            },
+            {
+              "text": "Mark",
+              "label": "PERSON",
+              "start": 102,
+              "end": 106
+            },
+            {
+              "text": "the Joint Platform",
+              "label": "ORG",
+              "start": 119,
+              "end": 137
+            },
+            {
+              "text": "5.3 Audit Rights",
+              "label": "CARDINAL",
+              "start": 139,
+              "end": 155
+            },
+            {
+              "text": "Party",
+              "label": "ORG",
+              "start": 165,
+              "end": 170
+            },
+            {
+              "text": "30 days'",
+              "label": "DATE",
+              "start": 220,
+              "end": 228
+            },
+            {
+              "text": "5%",
+              "label": "PERCENT",
+              "start": 278,
+              "end": 280
+            },
+            {
+              "text": "10%",
+              "label": "PERCENT",
+              "start": 319,
+              "end": 322
+            },
+            {
+              "text": "ARTICLE VI - TERM",
+              "label": "LAW",
+              "start": 333,
+              "end": 350
+            },
+            {
+              "text": "6.1",
+              "label": "CARDINAL",
+              "start": 367,
+              "end": 370
+            },
+            {
+              "text": "10 years",
+              "label": "DATE",
+              "start": 392,
+              "end": 400
+            },
+            {
+              "text": "Effective Date",
+              "label": "ORG",
+              "start": 406,
+              "end": 420
+            },
+            {
+              "text": "6.2",
+              "label": "CARDINAL",
+              "start": 484,
+              "end": 487
+            },
+            {
+              "text": "90 days",
+              "label": "DATE",
+              "start": 553,
+              "end": 560
+            },
+            {
+              "text": "Party",
+              "label": "ORG",
+              "start": 590,
+              "end": 595
+            },
+            {
+              "text": "6.3",
+              "label": "CARDINAL",
+              "start": 626,
+              "end": 629
+            },
+            {
+              "text": "5 years  post",
+              "label": "DATE",
+              "start": 724,
+              "end": 737
+            },
+            {
+              "text": "Party",
+              "label": "ORG",
+              "start": 866,
+              "end": 871
+            },
+            {
+              "text": "ARTICLE VII - REPRESENTATIONS",
+              "label": "LAW",
+              "start": 873,
+              "end": 902
+            },
+            {
+              "text": "7.1",
+              "label": "CARDINAL",
+              "start": 918,
+              "end": 921
+            },
+            {
+              "text": "Party",
+              "label": "ORG",
+              "start": 927,
+              "end": 932
+            },
+            {
+              "text": "third",
+              "label": "ORDINAL",
+              "start": 1080,
+              "end": 1085
+            },
+            {
+              "text": "ARTICLE VIII - INDEMNIFICATION",
+              "label": "LAW",
+              "start": 1096,
+              "end": 1126
+            },
+            {
+              "text": "8.1",
+              "label": "CARDINAL",
+              "start": 1155,
+              "end": 1158
+            },
+            {
+              "text": "Party",
+              "label": "ORG",
+              "start": 1182,
+              "end": 1187
+            },
+            {
+              "text": "third",
+              "label": "ORDINAL",
+              "start": 1223,
+              "end": 1228
+            }
+          ]
+        }
+      },
+      {
+        "page": 4,
+        "text": "8.2 Limitation of Liability\n- Liability is capped at $10,000,000, except for breaches of confidentiality, IP infringement, or indemnity obligations.\nARTICLE IX - CONFIDENTIALITY\n9.1 All information marked \"Confidential\" or reasonably understood to be proprietary shall be protected for 10 years after\ntermination.\n9.2 Disclosure is permitted only to Affiliates, subcontractors, and legal advisors bound by similar obligations.\nARTICLE X - MISCELLANEOUS\n10.1 Force Majeure - No Party shall be liable for delays due to acts beyond reasonable control.\n10.2 Assignment - May not be assigned without prior written consent, except to an Affiliate or in merger/acquisition.\n10.3 Entire Agreement - This document and its Exhibits constitute the entire agreement.\n10.4 Governing Law - Laws of the Netherlands shall govern, excluding conflict of laws principles.\nEXHIBITS\n- Exhibit A: Joint Platform Technical Specifications\n- Exhibit B: Development Milestones and Timelines\n- Exhibit C: IP Ownership Matrix and Contribution Ledger\n- Exhibit D: Dispute Escalation Flowchart\n- Exhibit E: Confidential Information Handling Protocol\nIN WITNESS WHEREOF, the Parties have executed this Agreement as of the Effective Date.\nOmniSynapse Technologies, Inc.\nBy: _______________________\nName: Cynthia D. Travers\nTitle: CEO",
+        "md": "# 8.2 Limitation of Liability\n\nLiability is capped at $10,000,000, except for breaches of confidentiality, IP infringement, or indemnity obligations.\n\n# ARTICLE IX - CONFIDENTIALITY\n\n# 9.1\n\nAll information marked \"Confidential\" or reasonably understood to be proprietary shall be protected for 10 years after termination.\n\n# 9.2\n\nDisclosure is permitted only to Affiliates, subcontractors, and legal advisors bound by similar obligations.\n\n# ARTICLE X - MISCELLANEOUS\n\n# 10.1 Force Majeure\n\nNo Party shall be liable for delays due to acts beyond reasonable control.\n\n# 10.2 Assignment\n\nMay not be assigned without prior written consent, except to an Affiliate or in merger/acquisition.\n\n# 10.3 Entire Agreement\n\nThis document and its Exhibits constitute the entire agreement.\n\n# 10.4 Governing Law\n\nLaws of the Netherlands shall govern, excluding conflict of laws principles.\n\n# EXHIBITS\n\n- Exhibit A: Joint Platform Technical Specifications\n- Exhibit B: Development Milestones and Timelines\n- Exhibit C: IP Ownership Matrix and Contribution Ledger\n- Exhibit D: Dispute Escalation Flowchart\n- Exhibit E: Confidential Information Handling Protocol\n\nIN WITNESS WHEREOF, the Parties have executed this Agreement as of the Effective Date.\n\nOmniSynapse Technologies, Inc.\n\nBy: _______________________\n\nName: Cynthia D. Travers\n\nTitle: CEO",
+        "images": [],
+        "charts": [],
+        "items": [
+          {
+            "type": "heading",
+            "lvl": 1,
+            "value": "8.2 Limitation of Liability",
+            "md": "# 8.2 Limitation of Liability",
+            "bBox": {
+              "x": 31,
+              "y": 35.89,
+              "w": 107,
+              "h": 10
+            }
+          },
+          {
+            "type": "text",
+            "value": "Liability is capped at $10,000,000, except for breaches of confidentiality, IP infringement, or indemnity obligations.",
+            "md": "Liability is capped at $10,000,000, except for breaches of confidentiality, IP infringement, or indemnity obligations.",
+            "bBox": {
+              "x": 0,
+              "y": 0,
+              "w": 595.28,
+              "h": 841.89
+            }
+          },
+          {
+            "type": "heading",
+            "lvl": 1,
+            "value": "ARTICLE IX - CONFIDENTIALITY",
+            "md": "# ARTICLE IX - CONFIDENTIALITY",
+            "bBox": {
+              "x": 31,
+              "y": 120.89,
+              "w": 152,
+              "h": 10
+            }
+          },
+          {
+            "type": "heading",
+            "lvl": 1,
+            "value": "9.1",
+            "md": "# 9.1",
+            "bBox": {
+              "x": 0,
+              "y": 0,
+              "w": 595.28,
+              "h": 841.89
+            }
+          },
+          {
+            "type": "text",
+            "value": "All information marked \"Confidential\" or reasonably understood to be proprietary shall be protected for 10 years after termination.",
+            "md": "All information marked \"Confidential\" or reasonably understood to be proprietary shall be protected for 10 years after termination.",
+            "bBox": {
+              "x": 31,
+              "y": 177.89,
+              "w": 52,
+              "h": 10
+            }
+          },
+          {
+            "type": "heading",
+            "lvl": 1,
+            "value": "9.2",
+            "md": "# 9.2",
+            "bBox": {
+              "x": 0,
+              "y": 0,
+              "w": 595.28,
+              "h": 841.89
+            }
+          },
+          {
+            "type": "text",
+            "value": "Disclosure is permitted only to Affiliates, subcontractors, and legal advisors bound by similar obligations.",
+            "md": "Disclosure is permitted only to Affiliates, subcontractors, and legal advisors bound by similar obligations.",
+            "bBox": {
+              "x": 0,
+              "y": 0,
+              "w": 595.28,
+              "h": 841.89
+            }
+          },
+          {
+            "type": "heading",
+            "lvl": 1,
+            "value": "ARTICLE X - MISCELLANEOUS",
+            "md": "# ARTICLE X - MISCELLANEOUS",
+            "bBox": {
+              "x": 31,
+              "y": 262.89,
+              "w": 146,
+              "h": 10
+            }
+          },
+          {
+            "type": "heading",
+            "lvl": 1,
+            "value": "10.1 Force Majeure",
+            "md": "# 10.1 Force Majeure",
+            "bBox": {
+              "x": 0,
+              "y": 0,
+              "w": 595.28,
+              "h": 841.89
+            }
+          },
+          {
+            "type": "text",
+            "value": "No Party shall be liable for delays due to acts beyond reasonable control.",
+            "md": "No Party shall be liable for delays due to acts beyond reasonable control.",
+            "bBox": {
+              "x": 0,
+              "y": 0,
+              "w": 595.28,
+              "h": 841.89
+            }
+          },
+          {
+            "type": "heading",
+            "lvl": 1,
+            "value": "10.2 Assignment",
+            "md": "# 10.2 Assignment",
+            "bBox": {
+              "x": 0,
+              "y": 0,
+              "w": 595.28,
+              "h": 841.89
+            }
+          },
+          {
+            "type": "text",
+            "value": "May not be assigned without prior written consent, except to an Affiliate or in merger/acquisition.",
+            "md": "May not be assigned without prior written consent, except to an Affiliate or in merger/acquisition.",
+            "bBox": {
+              "x": 0,
+              "y": 0,
+              "w": 595.28,
+              "h": 841.89
+            }
+          },
+          {
+            "type": "heading",
+            "lvl": 1,
+            "value": "10.3 Entire Agreement",
+            "md": "# 10.3 Entire Agreement",
+            "bBox": {
+              "x": 0,
+              "y": 0,
+              "w": 595.28,
+              "h": 841.89
+            }
+          },
+          {
+            "type": "text",
+            "value": "This document and its Exhibits constitute the entire agreement.",
+            "md": "This document and its Exhibits constitute the entire agreement.",
+            "bBox": {
+              "x": 31,
+              "y": 432.89,
+              "w": 46,
+              "h": 10
+            }
+          },
+          {
+            "type": "heading",
+            "lvl": 1,
+            "value": "10.4 Governing Law",
+            "md": "# 10.4 Governing Law",
+            "bBox": {
+              "x": 0,
+              "y": 0,
+              "w": 595.28,
+              "h": 841.89
+            }
+          },
+          {
+            "type": "text",
+            "value": "Laws of the Netherlands shall govern, excluding conflict of laws principles.",
+            "md": "Laws of the Netherlands shall govern, excluding conflict of laws principles.",
+            "bBox": {
+              "x": 0,
+              "y": 0,
+              "w": 595.28,
+              "h": 841.89
+            }
+          },
+          {
+            "type": "heading",
+            "lvl": 1,
+            "value": "EXHIBITS",
+            "md": "# EXHIBITS",
+            "bBox": {
+              "x": 31,
+              "y": 432.89,
+              "w": 46,
+              "h": 10
+            }
+          },
+          {
+            "type": "text",
+            "value": "- Exhibit A: Joint Platform Technical Specifications\n- Exhibit B: Development Milestones and Timelines\n- Exhibit C: IP Ownership Matrix and Contribution Ledger\n- Exhibit D: Dispute Escalation Flowchart\n- Exhibit E: Confidential Information Handling Protocol\n\nIN WITNESS WHEREOF, the Parties have executed this Agreement as of the Effective Date.\n\nOmniSynapse Technologies, Inc.\n\nBy: _______________________\n\nName: Cynthia D. Travers\n\nTitle: CEO",
+            "md": "- Exhibit A: Joint Platform Technical Specifications\n- Exhibit B: Development Milestones and Timelines\n- Exhibit C: IP Ownership Matrix and Contribution Ledger\n- Exhibit D: Dispute Escalation Flowchart\n- Exhibit E: Confidential Information Handling Protocol\n\nIN WITNESS WHEREOF, the Parties have executed this Agreement as of the Effective Date.\n\nOmniSynapse Technologies, Inc.\n\nBy: _______________________\n\nName: Cynthia D. Travers\n\nTitle: CEO",
+            "bBox": {
+              "x": 31,
+              "y": 460.89,
+              "w": 412,
+              "h": 294
+            }
+          }
+        ],
+        "status": "OK",
+        "originalOrientationAngle": 0,
+        "links": [],
+        "width": 595.28,
+        "height": 841.89,
+        "triggeredAutoMode": false,
+        "parsingMode": "accurate",
+        "structuredData": null,
+        "noStructuredContent": false,
+        "noTextContent": false,
+        "confidence": 0.998,
+        "nlp_annotations": {
+          "entities": [
+            {
+              "text": "8.2 Limitation of Liability\n- Liability",
+              "label": "CARDINAL",
+              "start": 0,
+              "end": 39
+            },
+            {
+              "text": "10,000,000",
+              "label": "MONEY",
+              "start": 54,
+              "end": 64
+            },
+            {
+              "text": "ARTICLE IX - CONFIDENTIALITY",
+              "label": "LAW",
+              "start": 149,
+              "end": 177
+            },
+            {
+              "text": "9.1",
+              "label": "CARDINAL",
+              "start": 178,
+              "end": 181
+            },
+            {
+              "text": "Confidential",
+              "label": "WORK_OF_ART",
+              "start": 206,
+              "end": 218
+            },
+            {
+              "text": "10 years",
+              "label": "DATE",
+              "start": 286,
+              "end": 294
+            },
+            {
+              "text": "9.2",
+              "label": "CARDINAL",
+              "start": 314,
+              "end": 317
+            },
+            {
+              "text": "Affiliates",
+              "label": "ORG",
+              "start": 350,
+              "end": 360
+            },
+            {
+              "text": "ARTICLE X - MISCELLANEOUS",
+              "label": "LAW",
+              "start": 427,
+              "end": 452
+            },
+            {
+              "text": "10.1",
+              "label": "CARDINAL",
+              "start": 453,
+              "end": 457
+            },
+            {
+              "text": "10.2",
+              "label": "CARDINAL",
+              "start": 549,
+              "end": 553
+            },
+            {
+              "text": "10.3",
+              "label": "CARDINAL",
+              "start": 667,
+              "end": 671
+            },
+            {
+              "text": "10.4",
+              "label": "CARDINAL",
+              "start": 755,
+              "end": 759
+            },
+            {
+              "text": "Governing Law - Laws",
+              "label": "LAW",
+              "start": 760,
+              "end": 780
+            },
+            {
+              "text": "Netherlands",
+              "label": "GPE",
+              "start": 788,
+              "end": 799
+            },
+            {
+              "text": "Joint Platform Technical Specifications",
+              "label": "ORG",
+              "start": 875,
+              "end": 914
+            },
+            {
+              "text": "the Effective Date",
+              "label": "EVENT",
+              "start": 1187,
+              "end": 1205
+            },
+            {
+              "text": "OmniSynapse Technologies, Inc.",
+              "label": "ORG",
+              "start": 1207,
+              "end": 1237
+            },
+            {
+              "text": "Cynthia D. Travers",
+              "label": "PERSON",
+              "start": 1272,
+              "end": 1290
+            }
+          ]
+        }
+      },
+      {
+        "page": 5,
+        "text": "NeuroCore International B.V.\nBy: _______________________\nName: Dr. Lars van Beek\nTitle: Chief Science Officer",
+        "md": "# NeuroCore International B.V.\n\nBy: _______________________\n\nName: Dr. Lars van Beek\n\nTitle: Chief Science Officer",
+        "images": [],
+        "charts": [],
+        "items": [
+          {
+            "type": "heading",
+            "lvl": 1,
+            "value": "NeuroCore International B.V.",
+            "md": "# NeuroCore International B.V.",
+            "bBox": {
+              "x": 31,
+              "y": 35.89,
+              "w": 128,
+              "h": 10
+            }
+          },
+          {
+            "type": "text",
+            "value": "By: _______________________\n\nName: Dr. Lars van Beek\n\nTitle: Chief Science Officer",
+            "md": "By: _______________________\n\nName: Dr. Lars van Beek\n\nTitle: Chief Science Officer",
+            "bBox": {
+              "x": 31,
+              "y": 63.89,
+              "w": 145,
+              "h": 67
+            }
+          }
+        ],
+        "status": "OK",
+        "originalOrientationAngle": 0,
+        "links": [],
+        "width": 595.28,
+        "height": 841.89,
+        "triggeredAutoMode": false,
+        "parsingMode": "accurate",
+        "structuredData": null,
+        "noStructuredContent": false,
+        "noTextContent": false,
+        "confidence": 0.978,
+        "nlp_annotations": {
+          "entities": [
+            {
+              "text": "International B.V.",
+              "label": "ORG",
+              "start": 10,
+              "end": 28
+            },
+            {
+              "text": "Lars van Beek",
+              "label": "PERSON",
+              "start": 67,
+              "end": 80
+            }
+          ]
+        }
+      }
+    ],
+    "job_metadata": {
+      "credits_used": 0,
+      "job_credits_usage": 0,
+      "job_pages": 0,
+      "job_auto_mode_triggered_pages": 0,
+      "job_is_cache_hit": true
+    },
+    "job_id": "6bb7c460-e6ca-4c4f-a14c-3049b3013719",
+    "file_path": "sample_contract.pdf",
+    "metadata": {
+      "nlp_enhancement": {
+        "timestamp": "2025-05-15 16:55:12",
+        "models": {
+          "spacy": "en_core_web_lg",
+          "contractbert": "legal-bert-base-uncased"
+        }
+      }
+    }
+  }
+]

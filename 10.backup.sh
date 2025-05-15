@@ -1,21 +1,30 @@
 #!/bin/bash
+# Backup important project files
+# Usage: ./10.backup.sh
 
-# backup_and_clean.sh - Script to backup important files
-# Usage: ./backup_and_clean.sh
+# ANSI color codes for better output formatting
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+echo -e "${YELLOW}Project Backup Script${NC}"
+echo ""
 
 # Set timestamp for backup files
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
 BACKUP_DIR="backup_$TIMESTAMP"
 BACKUP_ZIP="llamaparse_neo4j_backup_$TIMESTAMP.zip"
 
-echo "Starting backup process..."
+echo -e "${YELLOW}Starting backup process...${NC}"
 
 # Create backup directory
 mkdir -p "$BACKUP_DIR"
-echo "Created backup directory: $BACKUP_DIR"
+echo -e "${BLUE}Created backup directory: $BACKUP_DIR${NC}"
 
 # Backup shell scripts
-echo "Backing up shell scripts..."
+echo -e "${YELLOW}Backing up shell scripts...${NC}"
 cp *.sh "$BACKUP_DIR/"
 
 # Backup Python source files (excluding __pycache__)
@@ -61,14 +70,14 @@ echo "Cleaning logs directory..."
 rm -f logs/*
 
 # Clean up data directory - delete everything without exceptions
-echo "Cleaning data directory..."
+echo -e "${YELLOW}Cleaning data directory...${NC}"
 rm -rf data/*
 
-echo "Backup process completed."
-echo "Backup zip archive: $BACKUP_ZIP"
+echo -e "${GREEN}✅ Backup process completed!${NC}"
+echo -e "${BLUE}Backup zip archive:${NC} $BACKUP_ZIP"
 echo ""
-echo "Summary of actions:"
-echo "1. Created zip archive: $BACKUP_ZIP (excluding __pycache__ directories)"
-echo "2. Backed up all files from data/ directory"
-echo "3. Deleted ALL files from data/ directory"
-echo "4. Deleted all files from logs/ directory"
+echo -e "${YELLOW}Summary of actions:${NC}"
+echo -e "1. Created zip archive: $BACKUP_ZIP (excluding __pycache__ directories)"
+echo -e "2. Backed up all files from data/ directory"
+echo -e "3. Deleted ALL files from data/ directory"
+echo -e "4. Deleted all files from logs/ directory"
